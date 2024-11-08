@@ -1,0 +1,27 @@
+
+<div class="container">
+    <h2>The list of people in the system</h2>
+    <div>
+        <tr>
+            <th>First Name</th>
+            <th>Surname</th>
+            <th>Role</th>
+            <th>Group</th>
+        </tr>
+        <tr *ngFor="let person of people">
+            <td>{{person.firstName}}</td>
+            <td>{{person.surname}}</td>
+            <td>{{person.role}}</td>
+            <td>{{person.group}}</td>
+            <button class="btn btn-secondary" (click)="editPerson(person.id)">Edit</button>
+            <button class="btn btn-danger" (click)="deletePerson(person.id)">Delete</button>
+        </tr>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-12">
+            <button class="btn btn-primary" (click)="createPerson()">Create Users</button>
+        </div>
+    </div>
+</div>
+
+    

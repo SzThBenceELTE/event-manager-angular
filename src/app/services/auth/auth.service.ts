@@ -36,21 +36,20 @@ export class AuthService {
     return this.usernameSubject.asObservable();
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { username, password })
+  login(username: string, password: string) {
+    return this.http
+      .post<{ token: string }>(`${this.apiUrl}/login`, { username, password })
       .pipe(
-        tap(response => {
-          localStorage.setItem('loginToken', response.loginToken);
-          localStorage.setItem('userName', username);
-
-          this.setLoginToken(response.loginToken);
-          this.setUsername(username);
-
-          console.log('loginToken', response.loginToken);
-          console.log('username', username);
-
+        tap((response) => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('loginToken', response.token);
         })
       );
+  }
+
+  // Add method to get the token
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
   logout() {

@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { PersonModel } from "../../models/person.model";
+import { RoleTypeEnum } from "../../models/enums/role-type.enum";
+import { GroupTypeEnum } from "../../models/enums/group-type.enum";
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +17,7 @@ export class PersonService {
         return this.http.get(this.apiUrl);
     }
 
-    createPerson(person: { name: string; email: string }): Observable<any> {
+    createPerson(person: { firstName: string; surname: string; role: RoleTypeEnum; group: GroupTypeEnum | undefined }): Observable<any> {
         return this.http.post(this.apiUrl, person);
     }
 
@@ -22,7 +25,7 @@ export class PersonService {
         return this.http.get(`${this.apiUrl}/${id}`);
     }
 
-    updatePerson(id: number, person: { name: string; email: string }): Observable<any> {
+    updatePerson(id: number, person: { firstName: string; surname: string; role: RoleTypeEnum; group: GroupTypeEnum | undefined }): Observable<any> {
         return this.http.put(`${this.apiUrl}/${id}`, person);
     }
 
