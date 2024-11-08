@@ -22,6 +22,10 @@ export class UserService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
+  getUserByEmail(email: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}?email=${email}`);
+  }
+
   updateUser(id: number, user: { name: string; email: string }): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, user);
   }

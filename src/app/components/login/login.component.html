@@ -1,16 +1,56 @@
 <!-- src/app/login/login.component.html -->
-<div class="container">
-<h2>Login</h2>
-<form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
-    <div class="form-group">
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" ngModel required class="form-control">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="text-center mb-4">Login</h2>
+      <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+
+        <!-- Username Field -->
+        <div class="form-group mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-control"
+            ngModel
+            required
+            #username="ngModel"
+          />
+          <div *ngIf="username.invalid && username.touched" class="text-danger">
+            Username is required.
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            ngModel
+            required
+            minlength="6"
+            #password="ngModel"
+          />
+          <div *ngIf="password.invalid && password.touched" class="text-danger">
+            Password must be at least 6 characters long.
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">
+          Login
+        </button>
+
+        <!-- Error Message -->
+        <div *ngIf="loginError" class="alert alert-danger mt-3">
+          {{ loginError }}
+        </div>
+
+      </form>
     </div>
-    <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" ngModel required class="form-control">
-    </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!loginForm.valid">Login</button>
-</form>
+  </div>
 </div>
-  

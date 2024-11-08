@@ -1,17 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  At least this is working
-  <nav>
-    <a routerLink="/login">Login</a>
-    |
-    <a routerLink="/users">Users</a>
-  </nav>
-  <router-outlet></router-outlet>
-</body>
-</html>
+<!-- <div class="container">
+  <div class="row">
+    <div class="col-4">
+      <h1>Event Manager</h1>
+    </div>
+  </div>
+</div> -->
+
+<!-- <nav class="navbar">
+  <a routerLink="/">Home</a>
+  |
+  <a routerLink="/login">Login</a>
+  |
+  <a routerLink="/users">Users</a>
+  |
+  <a routerLink="/register">Register</a>
+  |
+  <span *ngIf="isLoggedIn">
+    Welcome, {{ userName }}!
+    <button (click)="logout()">Logout</button>
+  </span>
+</nav>
+<router-outlet></router-outlet> -->
+
+<nav class="navbar navbar-expand-lg bg-primary mb-4" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">Event Manager</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav me-auto">
+        <!-- Removed duplicate Home link -->
+        
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/people">People</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/register">Register</a>
+        </li>
+        <li class="nav-item " *ngIf="isLoggedIn">
+          <span>
+            <a class="nav-link">Welcome, {{ userName }}!</a>
+          </span>
+        </li>
+        <li class="nav-item " *ngIf="isLoggedIn">
+          <span>
+            <a class="nav-link" (click)="logout()">Logout</a>
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<router-outlet></router-outlet>

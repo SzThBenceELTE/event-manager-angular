@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { AppComponent } from './app.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { PersonListComponent } from './components/persons/person-list.component';
 
 const appRoutes: Routes = [
   { path: 'users', component: UserListComponent },
@@ -25,6 +27,7 @@ const appRoutes: Routes = [
       FormsModule, // Add FormsModule here
       AppComponent,
       LoginComponent,
+      RegisterComponent,
     ],
     providers: [],
     bootstrap: []
