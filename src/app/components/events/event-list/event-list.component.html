@@ -1,0 +1,27 @@
+
+<div class="container">
+    <h2>The list of events in the system</h2>
+    <div>
+        <tr>
+            <th>Event Name</th>
+            <th>Event Type</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Max Number of Participants</th>
+        </tr>
+        <tr *ngFor="let event of events">
+            <td>{{event.name}}</td>
+            <td>{{event.type}}</td>
+            <td>{{event.startDate}}</td>
+            <td>{{event.endDate}}</td>
+            <td>{{event.maxParticipants}}</td>
+            <button class="btn btn-secondary" (click)="editEvent(event.id)">Edit</button>
+            <button class="btn btn-danger" (click)="deleteEvent(event.id)">Delete</button>
+        </tr>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-12">
+            <button class="btn btn-primary" (click)="createEvent()">Create Users</button>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { EventTypeEnum } from "../../models/enums/event-type.enum";
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,7 @@ export class EventService {
         return this.http.get(this.apiUrl);
     }
 
-    createEvent(event: { name: string; email: string }): Observable<any> {
+    createEvent(event: { name: string; type: EventTypeEnum; startDate: Date; endDate: Date; maxParticipants: number }): Observable<any> {
         return this.http.post(this.apiUrl, event);
     }
 
@@ -22,7 +23,7 @@ export class EventService {
         return this.http.get(`${this.apiUrl}/${id}`);
     }
 
-    updateEvent(id: number, event: { name: string; email: string }): Observable<any> {
+    updateEvent(id: number, event: { name: string; type: EventTypeEnum; startDate: Date; endDate: Date; maxParticipants: number }): Observable<any> {
         return this.http.put(`${this.apiUrl}/${id}`, event);
     }
 

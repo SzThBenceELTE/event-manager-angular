@@ -59,10 +59,16 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('loginToken'); // Check if loginToken exists
+    if (typeof window === 'undefined') {
+      return false; // SSR context, localStorage isn't available
+    }
+    return !!localStorage.getItem('loginToken');
   }
 
   getName(): string | null {
+    if (typeof window === 'undefined') {
+      return ""; // SSR context, localStorage isn't available
+    }
     return localStorage.getItem('userName');
   }
 

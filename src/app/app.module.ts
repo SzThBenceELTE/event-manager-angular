@@ -11,6 +11,12 @@ import { PersonListComponent } from './components/persons/person-list/person-lis
 //import { EventListComponent } from './components/event-list/event-list.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './services/auth/token.interceptor';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+
+
 
 const appRoutes: Routes = [
   //{path : 'events', component: EventListComponent},
@@ -36,9 +42,15 @@ const appRoutes: Routes = [
       RegisterComponent,
       PersonListComponent,
       UserListComponent,
+      MatDatepickerModule,
+      MatNativeDateModule,
+      MatInputModule,
+      NgxMaterialTimepickerModule,
     ],
     providers: [
       { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+      MatDatepickerModule,
+      MatNativeDateModule,
     ],
     bootstrap: []
   })
