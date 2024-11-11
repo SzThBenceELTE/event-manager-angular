@@ -56,6 +56,78 @@
                     </div>
                 </div>
 
+                <!-- Existing fields like username, email, password -->
+
+                <!-- First Name Field -->
+                <div class="form-group mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    class="form-control"
+                    ngModel
+                    required
+                    #firstName="ngModel"
+                    />
+                    <div *ngIf="firstName.invalid && firstName.touched" class="text-danger">
+                    First Name is required.
+                    </div>
+                </div>
+                
+                <!-- Surname Field -->
+                <div class="form-group mb-3">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input
+                    type="text"
+                    id="surname"
+                    name="surname"
+                    class="form-control"
+                    ngModel
+                    required
+                    #surname="ngModel"
+                    />
+                    <div *ngIf="surname.invalid && surname.touched" class="text-danger">
+                    Surname is required.
+                    </div>
+                </div>
+                
+                <!-- Role Field -->
+                <div class="form-group mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select
+                    id="role"
+                    name="role"
+                    class="form-control"
+                    ngModel
+                    required
+                    #role="ngModel"
+                    >
+                    <option *ngFor="let roleType of roleTypes" [value]="roleType">
+                        {{ roleType }}
+                    </option>
+                    </select>
+                    <div *ngIf="role.invalid && role.touched" class="text-danger">
+                    Please select a role.
+                    </div>
+                </div>
+                
+                <!-- Group Field (Optional) -->
+                <div class="form-group mb-3">
+                    <label for="group" class="form-label">Group</label>
+                    <select
+                    id="group"
+                    name="group"
+                    class="form-control"
+                    ngModel
+                    #group="ngModel"
+                    >
+                    <option *ngFor="let groupType of groupTypes" [value]="groupType">
+                        {{ groupType }}
+                    </option>
+                    </select>
+  </div>
+
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary w-100">
                     Register

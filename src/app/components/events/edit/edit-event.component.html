@@ -29,7 +29,7 @@
                         required
                         #type="ngModel"
                     >
-                        <option *ngFor="let type of eventTypes" [value]="eventTypes">
+                        <option *ngFor="let type of eventTypes" [value]="type">
                             {{ type }}
                         </option>
                     </select>
@@ -91,7 +91,7 @@
                     </mat-slider>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">
-                    Create
+                    Edit
                 </button>
             </form>
         </div>
