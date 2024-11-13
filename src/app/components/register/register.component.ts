@@ -51,6 +51,8 @@ export class RegisterComponent {
             }
           });
 
+          
+
         // // Check if email already exists asynchronously
         // this.userService.getUserByEmail(email).subscribe({
         //     next: (existingUser) => {

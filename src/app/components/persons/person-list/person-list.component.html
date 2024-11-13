@@ -3,12 +3,14 @@
     <h2>The list of people in the system</h2>
     <div>
         <tr>
+            <th>Id</th>
             <th>First Name</th>
             <th>Surname</th>
             <th>Role</th>
             <th>Group</th>
         </tr>
         <tr *ngFor="let person of people">
+            <td>{{person.id}}</td>
             <td>{{person.firstName}}</td>
             <td>{{person.surname}}</td>
             <td>{{person.role}}</td>

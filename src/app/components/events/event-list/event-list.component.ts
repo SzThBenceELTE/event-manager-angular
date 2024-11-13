@@ -4,7 +4,6 @@ import { EventService } from "../../../services/event/event.service";
 import { Router } from '@angular/router';
 import { EventModel } from "../../../models/event.model";
 
-
 @Component({
     selector: 'app-event-list',
     templateUrl: './event-list.component.html',
@@ -42,5 +41,31 @@ export class EventListComponent implements OnInit{
             }
         });
     }
+    // event-list.component.ts
+    // joinEvent(eventId: number) {
+    //     //const personId = /* get the current person's ID */;
+    //     this.eventService.joinEvent(eventId, personId).subscribe({
+    //     next: (response) => {
+    //         console.log(response);
+    //         // Update UI accordingly
+    //     },
+    //     error: (err) => {
+    //         console.error(err.error.message);
+    //     },
+    //     });
+    // }
+  
+    // leaveEvent(eventId: number) {
+    //     //const personId = /* get the current person's ID */;
+    //     this.eventService.leaveEvent(eventId, personId).subscribe({
+    //     next: (response) => {
+    //         console.log(response);
+    //         // Update UI accordingly
+    //     },
+    //     error: (err) => {
+    //         console.error(err.error.message);
+    //     },
+    //     });
+//   }
 
 }

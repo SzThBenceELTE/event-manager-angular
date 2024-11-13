@@ -30,4 +30,12 @@ export class EventService {
     deleteEvent(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }
+
+    joinEvent(eventId: number, personId: number) {
+        return this.http.post('/api/events/join', { eventId, personId });
+    }
+      
+    leaveEvent(eventId: number, personId: number) {
+        return this.http.post('/api/events/leave', { eventId, personId });
+    }
 }

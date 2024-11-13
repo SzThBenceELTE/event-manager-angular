@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { PersonModel } from '../../models/person.model';
 
 
 @Injectable({
@@ -11,6 +12,8 @@ import { tap } from 'rxjs/operators';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api/users'; // Change to your login API endpoint
+
+  private currentPerson: PersonModel | null = null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -72,5 +75,27 @@ export class AuthService {
     return localStorage.getItem('userName');
   }
 
+  setCurrentPerson(person: PersonModel): void {
+    this.currentPerson = person;
+    // Optionally, store in localStorage/sessionStorage for persistence
+    localStorage.setItem('currentPerson', JSON.stringify(person));
+  }
+
+  getCurrentPerson(): PersonModel | null {
+    // If currentPerson is not set, try to get it from localStorage
+    if (!this.currentPerson) {
+      const personString = localStorage.getItem('currentPerson');
+      if (personString) {
+        this.currentPerson = JSON.parse(personString);
+      }
+    }
+    return this.currentPerson;
+  }
+
+  // Clear user data on logout
+  clearCurrentPerson(): void {
+    this.currentPerson = null;
+    localStorage.removeItem('currentPerson');
+  }
   
 }

@@ -24,6 +24,7 @@ export class LoginComponent {
       next: (response) => {
         this.loginError = "";
         console.log('Login successful', response);
+        this.authService.setCurrentPerson(username); // Set the current user
         this.router.navigate(['/users']); // Navigate to the user list or dashboard on successful login
       },
       error: (err) => {
