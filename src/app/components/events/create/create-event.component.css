@@ -1,0 +1,28 @@
+.custom-snackbar {
+    font-size: 16px;
+    border-radius: 4px;
+    min-width: 300px; /* Increased width for better visibility */
+    max-width: 600px; /* Optional: Limit maximum width */
+}
+
+/* Styling for error snack-bars */
+.error-snackbar {
+    background-color: #f44336 !important; /* Red background */
+    color: #ffffff !important; /* White text */
+    font-weight: bold;
+}
+
+/* Styling for success snack-bars */
+.success-snackbar {
+    background-color: #4caf50 !important; /* Green background */
+    color: #ffffff !important; /* White text */
+    font-weight: bold;
+}
+
+/* Optional: Adjust the position and size for larger screens */
+@media (min-width: 768px) {
+    .custom-snackbar {
+        font-size: 18px;
+        padding: 16px;
+    }
+}

@@ -1,29 +1,123 @@
+<!-- person-list.component.html -->
+<style>
+    .table {
+        display: table;
+        width: 100%;
+    }
 
-<div class="container">
+    .d-table-row {
+        display: table-row;
+    }
+
+    .d-table-cell {
+        display: table-cell;
+    }
+
+    /* Responsive Table */
+    @media (max-width: 768px) {
+        .table, .d-table-row, .d-table-cell {
+            display: block;
+            width: 100%;
+        }
+
+        .d-table-row {
+            margin-bottom: 1rem;
+        }
+
+        .d-table-cell {
+            padding: 0.5rem 0;
+        }
+    }
+</style>
+<div class="container table">
     <h2>The list of people in the system</h2>
-    <div>
-        <tr>
-            <th>Id</th>
-            <th>First Name</th>
-            <th>Surname</th>
-            <th>Role</th>
-            <th>Group</th>
-        </tr>
-        <tr *ngFor="let person of people">
-            <td>{{person.id}}</td>
-            <td>{{person.firstName}}</td>
-            <td>{{person.surname}}</td>
-            <td>{{person.role}}</td>
-            <td>{{person.group}}</td>
-            <button class="btn btn-secondary" (click)="editPerson(person.id)">Edit</button>
-            <button class="btn btn-danger" (click)="deletePerson(person.id)">Delete</button>
-        </tr>
+    <!-- Search and Filter Inputs -->
+    <div class="row mb-3">
+        <div class="col-md-4 mb-2">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by name..." 
+                [(ngModel)]="searchTerm" 
+                (input)="onSearch()"
+            />
+        </div>
+        <div class="col-md-3 mb-2">
+            <select class="form-select" [(ngModel)]="selectedRole" (change)="onSearch()">
+                <option [ngValue]="null">All Roles</option>
+                <option *ngFor="let role of roles" [ngValue]="role">{{ role }}</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-2">
+            <select class="form-select" [(ngModel)]="selectedGroup" (change)="onSearch()" [disabled]="selectedRole === RoleTypeEnum.MANAGER">
+                <option [ngValue]="null">All Groups</option>
+                <option *ngFor="let group of groups" [ngValue]="group">{{ group }}</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-2">
+            <button class="btn btn-primary w-100" (click)="onClearFilters()">Clear</button>
+        </div>
     </div>
-    <div class="row">
+
+    <!-- Display Message When No Results Found -->
+    <div *ngIf="filteredPeople.length === 0">
+        <p>No people found matching your search criteria.</p>
+    </div>
+
+    <!-- Person Table -->
+    <div *ngIf="filteredPeople.length !== 0">
+        <div>
+            <table class="table table-striped">
+                <thead>
+                    <tr class="d-table-row">
+                        <th class="d-table-cell">Id</th>
+                        <th class="d-table-cell">First Name</th>
+                        <th class="d-table-cell">Surname</th>
+                        <th class="d-table-cell">Role</th>
+                        <th class="d-table-cell">Group</th>
+                        <th class="d-table-cell">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let person of paginatedPeople" class="d-table-row">
+                        <td class="d-table-cell">{{person.id}}</td>
+                        <td class="d-table-cell">{{person.firstName}}</td>
+                        <td class="d-table-cell">{{person.surname}}</td>
+                        <td class="d-table-cell">{{person.role}}</td>
+                        <td class="d-table-cell">{{person.group}}</td>
+                        <td class="d-table-cell">
+                            <button class="btn btn-secondary m-1" (click)="editPerson(person.id)">Edit</button>
+                            <button class="btn btn-danger m-1" (click)="deletePerson(person.id)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>  
+
+    <!-- Pagination Controls -->
+    <nav *ngIf="totalPages > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" href="#" (click)="$event.preventDefault(); changePage(currentPage - 1)">Previous</a>
+            </li>
+            <li 
+                class="page-item" 
+                *ngFor="let page of [].constructor(totalPages); let i = index" 
+                [class.active]="currentPage === (i + 1)"
+            >
+                <a class="page-link" href="#" (click)="$event.preventDefault();changePage(i + 1)">{{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" href="#" (click)="$event.preventDefault(); changePage(currentPage + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Create User Button -->
+    <div class="row pt-2 justify-content-center">
         <div class="col-lg-4 col-12">
-            <button class="btn btn-primary" (click)="createPerson()">Create Users</button>
+            <button class="btn btn-primary w-100" (click)="createPerson()">Create User</button>
         </div>
     </div>
 </div>
-
-    

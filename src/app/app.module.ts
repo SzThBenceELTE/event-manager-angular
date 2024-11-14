@@ -15,6 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 
@@ -46,6 +47,7 @@ const appRoutes: Routes = [
       MatNativeDateModule,
       MatInputModule,
       NgxMaterialTimepickerModule,
+      MatSnackBarModule,
     ],
     providers: [
       { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

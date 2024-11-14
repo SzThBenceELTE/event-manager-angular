@@ -1,9 +1,10 @@
+<!-- create-event.component.html -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mb-4">Create Event</h2>
             <form #createEventForm="ngForm" (ngSubmit)="onSubmit(createEventForm)">
-                <!-- First Name Field -->
+                <!-- Event Name Field -->
                 <div class="form-group mb-3">
                     <label for="name" class="form-label">Event Name</label>
                     <input
@@ -13,12 +14,14 @@
                         class="form-control"
                         ngModel
                         required
-                        #name="ngModel"
+                        #nameModel="ngModel"
                     />
-                    <div *ngIf="name.invalid && name.touched" class="text-danger">
+                    <div *ngIf="nameModel.invalid && nameModel.touched" class="text-danger">
                         Event Name is required.
                     </div>
                 </div>
+
+                <!-- Event Type Field -->
                 <div class="form-group mb-3">
                     <label for="type" class="form-label">Event Type</label>
                     <select
@@ -27,16 +30,18 @@
                         class="form-control"
                         ngModel
                         required
-                        #type="ngModel"
+                        #typeModel="ngModel"
                     >
                         <option *ngFor="let type of eventTypes" [value]="type">
                             {{ type }}
                         </option>
                     </select>
-                    <div *ngIf="type.invalid && type.touched" class="text-danger">
+                    <div *ngIf="typeModel.invalid && typeModel.touched" class="text-danger">
                         Please select an Event Type.
                     </div>
                 </div>
+
+                <!-- Start Date Field -->
                 <div class="form-group mb-3">
                     <label for="startDate" class="form-label">Start Date</label>
                     <mat-form-field appearance="fill" class="w-100">
@@ -48,13 +53,17 @@
                             name="startDate"
                             ngModel
                             required
-                            #startDate="ngModel"
+                            #startDateModel="ngModel"
                         />
                         <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                         <mat-datepicker #startDatePicker></mat-datepicker>
                     </mat-form-field>
+                    <div *ngIf="startDateModel.invalid && startDateModel.touched" class="text-danger">
+                        Start Date is required.
+                    </div>
                 </div>
-                
+
+                <!-- Start Time Field -->
                 <div class="form-group mb-3">
                     <label for="startTime" class="form-label">Start Time</label>
                     <input
@@ -64,9 +73,14 @@
                         [(ngModel)]="startTime"
                         required
                         class="form-control"
+                        #startTimeModel="ngModel"
                     />
+                    <div *ngIf="startTimeModel.invalid && startTimeModel.touched" class="text-danger">
+                        Start Time is required.
+                    </div>
                 </div>
-                
+
+                <!-- End Date Field -->
                 <div class="form-group mb-3">
                     <label for="endDate" class="form-label">End Date</label>
                     <mat-form-field appearance="fill" class="w-100">
@@ -78,13 +92,17 @@
                             name="endDate"
                             ngModel
                             required
-                            #endDate="ngModel"
+                            #endDateModel="ngModel"
                         />
                         <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                         <mat-datepicker #endDatePicker></mat-datepicker>
                     </mat-form-field>
+                    <div *ngIf="endDateModel.invalid && endDateModel.touched" class="text-danger">
+                        End Date is required.
+                    </div>
                 </div>
-                
+
+                <!-- End Time Field -->
                 <div class="form-group mb-3">
                     <label for="endTime" class="form-label">End Time</label>
                     <input
@@ -94,22 +112,42 @@
                         [(ngModel)]="endTime"
                         required
                         class="form-control"
+                        #endTimeModel="ngModel"
                     />
+                    <div *ngIf="endTimeModel.invalid && endTimeModel.touched" class="text-danger">
+                        End Time is required.
+                    </div>
                 </div>
-                
+
+                <!-- Maximum Number of Participants Field -->
                 <div class="form-group mb-3">
                     <label for="maxParticipants" class="form-label">Maximum Number of Participants</label>
-                    <mat-slider discrete [displayWith]="formatLabel" min="1" max="100" step="1">
-                        <input matSliderThumb
-                                placeholder="Number of Participants"
-                                id="maxParticipants"
-                                name="maxParticipants"
-                                ngModel
-                                required
-                                #maxParticipants="ngModel"
-                                value="10">
+                    <mat-slider 
+                        discrete 
+                        [displayWith]="formatLabel" 
+                        min="1" 
+                        max="300" 
+                        step="1"
+                        [(ngModel)]="maxParticipants"
+                        name="maxParticipants"
+                        required
+                        #maxParticipantsModel="ngModel">
+                        <input 
+                            matSliderThumb
+                            placeholder="Number of Participants"
+                            id="maxParticipants"
+                            name="maxParticipants"
+                            [(ngModel)]="maxParticipants"
+                            required
+                            #maxParticipantsThumb="ngModel"
+                            [value]="maxParticipants">
                     </mat-slider>
+                    <div *ngIf="maxParticipantsModel.invalid && maxParticipantsModel.touched" class="text-danger">
+                        Participants are required.
+                    </div>
                 </div>
+
+                <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary w-100">
                     Create
                 </button>

@@ -1,3 +1,4 @@
+<!-- edit-person.component.html -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -14,9 +15,9 @@
                         class="form-control"
                         [(ngModel)]="person.firstName"
                         required
-                        #firstName="ngModel"
+                        #firstNameModel="ngModel"
                     />
-                    <div *ngIf="firstName.invalid && firstName.touched" class="text-danger">
+                    <div *ngIf="firstNameModel.invalid && firstNameModel.touched" class="text-danger">
                         First Name is required.
                     </div>
                 </div>
@@ -31,9 +32,9 @@
                         class="form-control"
                         [(ngModel)]="person.surname"
                         required
-                        #surname="ngModel"
+                        #surnameModel="ngModel"
                     />
-                    <div *ngIf="surname.invalid && surname.touched" class="text-danger">
+                    <div *ngIf="surnameModel.invalid && surnameModel.touched" class="text-danger">
                         Surname is required.
                     </div>
                 </div>
@@ -47,18 +48,19 @@
                         class="form-control"
                         [(ngModel)]="person.role"
                         required
-                        #role="ngModel"
+                        #roleModel="ngModel"
                     >
+                        <option value="" disabled>Select a role</option>
                         <option *ngFor="let roleType of roleTypes" [value]="roleType">
                             {{ roleType }}
                         </option>
                     </select>
-                    <div *ngIf="role.invalid && role.touched" class="text-danger">
+                    <div *ngIf="roleModel.invalid && roleModel.touched" class="text-danger">
                         Please select a role.
                     </div>
                 </div>
 
-                <!-- Group Field -->
+                <!-- Group Field (Visible only if role is DEVELOPER) -->
                 <div class="form-group mb-3" *ngIf="person.role === 'DEVELOPER'">
                     <label for="group" class="form-label">Group</label>
                     <select
@@ -66,15 +68,23 @@
                         name="group"
                         class="form-control"
                         [(ngModel)]="person.group"
-                        #group="ngModel"
+                        required
+                        #groupModel="ngModel"
                     >
+                        <option value="" disabled>Select a group</option>
                         <option *ngFor="let groupType of groupTypes" [value]="groupType">
                             {{ groupType }}
                         </option>
                     </select>
+                    <div *ngIf="groupModel.invalid && groupModel.touched" class="text-danger">
+                        Please select a group.
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">
+                    Update
+                </button>
             </form>
         </div>
     </div>

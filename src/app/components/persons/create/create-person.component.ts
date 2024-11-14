@@ -6,6 +6,7 @@ import { PersonService } from "../../../services/person/person.service";
 import { FormsModule } from '@angular/forms';
 import { RoleTypeEnum } from "../../../models/enums/role-type.enum";
 import { GroupTypeEnum } from "../../../models/enums/group-type.enum";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component
 ({
@@ -20,7 +21,9 @@ export class CreatePersonComponent
     roleTypes = Object.values(RoleTypeEnum);
     groupTypes = Object.values(GroupTypeEnum);
 
-    constructor(private personService: PersonService, private router: Router) { }
+    constructor(private personService: PersonService,
+         private router: Router,
+        private snackBar: MatSnackBar) { }
 
     onSubmit(createPersonForm: any)
     {
@@ -31,12 +34,16 @@ export class CreatePersonComponent
 
         // Basic Validation Checks
         if (!firstName || !surname || !role) {
-            console.error('Please fill all the fields');
+            this.snackBar.open('Please fill all the fields', 'Close', {
+                duration: 3000,
+              });
             return;
         }
 
         if ((role == RoleTypeEnum.DEVELOPER) && !group) {
-            console.error('Please select a group for the developer');
+            this.snackBar.open('Please select a group for the developer', 'Close', {
+                duration: 3000,
+              });
             return;
         }
 
@@ -45,11 +52,15 @@ export class CreatePersonComponent
         // Create the person
         this.personService.createPerson({ firstName, surname, role, group }).subscribe({
             next: (response) => {
-                console.log('Person created successfully', response);
+                this.snackBar.open('Person created', 'Close', {
+                    duration: 3000,
+                  });
                 this.router.navigate(['/people']);
             },
             error: (err) => {
-                console.error('Person creation failed', err);
+                this.snackBar.open('Creation failed', 'Close', {
+                    duration: 3000,
+                  });
             }
         });
     }

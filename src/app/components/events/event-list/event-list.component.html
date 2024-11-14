@@ -1,29 +1,117 @@
+<!-- event-list.component.html -->
+<style>
+    .table {
+        display: table;
+        width: 100%;
+    }
 
-<div class="container">
+    .d-table-row {
+        display: table-row;
+    }
+
+    .d-table-cell {
+        display: table-cell;
+    }
+
+    /* Responsive Table */
+    @media (max-width: 768px) {
+        .table, .d-table-row, .d-table-cell {
+            display: block;
+            width: 100%;
+        }
+
+        .d-table-row {
+            margin-bottom: 1rem;
+        }
+
+        .d-table-cell {
+            padding: 0.5rem 0;
+        }
+    }
+</style>
+<div class="container table">
     <h2>The list of events in the system</h2>
-    <div>
-        <tr>
-            <th>Event Name</th>
-            <th>Event Type</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Max Number of Participants</th>
-        </tr>
-        <tr *ngFor="let event of events">
-            <td>{{event.name}}</td>
-            <td>{{event.type}}</td>
-            <td>{{event.startDate}}</td>
-            <td>{{event.endDate}}</td>
-            <td>{{event.maxParticipants}}</td>
-            <button class="btn btn-secondary" (click)="editEvent(event.id)">Edit</button>
-            <button class="btn btn-danger" (click)="deleteEvent(event.id)">Delete</button>
-            <!-- <button (click)="joinEvent(event.id)">Join Event</button>
-            <button (click)="leaveEvent(event.id)">Leave Event</button> -->
-        </tr>
+    <!-- Search and Filter Inputs -->
+    <div class="row mb-3">
+        <div class="col-md-4 mb-2">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by event name..." 
+                [(ngModel)]="searchTerm" 
+                (input)="onSearch()"
+            />
+        </div>
+        <div class="col-md-3 mb-2">
+            <select class="form-select" [(ngModel)]="selectedEventType" (change)="onSearch()">
+                <option [ngValue]="null">All Event Types</option>
+                <option *ngFor="let type of eventTypes" [ngValue]="type">{{ type }}</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-2">
+            <button class="btn btn-primary w-100" (click)="onClearFilters()">Clear</button>
+        </div>
     </div>
-    <div class="row">
+
+    <!-- Display Message When No Results Found -->
+    <div *ngIf="filteredEvents.length === 0">
+        <p>No events found matching your search criteria.</p>
+    </div>
+
+    <!-- Event Table -->
+    <div *ngIf="filteredEvents.length !== 0">
+        <div>
+            <table class="table table-striped">
+                <thead>
+                    <tr class="d-table-row">
+                        <th class="d-table-cell">Event Name</th>
+                        <th class="d-table-cell">Event Type</th>
+                        <th class="d-table-cell">Start Date</th>
+                        <th class="d-table-cell">End Date</th>
+                        <th class="d-table-cell">Max Participants</th>
+                        <th class="d-table-cell">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let event of paginatedEvents" class="d-table-row">
+                        <td class="d-table-cell">{{event.name}}</td>
+                        <td class="d-table-cell">{{event.type}}</td>
+                        <td class="d-table-cell">{{event.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                        <td class="d-table-cell">{{event.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                        <td class="d-table-cell">{{event.maxParticipants}}</td>
+                        <td class="d-table-cell">
+                            <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">Edit</button>
+                            <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>  
+
+    <!-- Pagination Controls -->
+    <nav *ngIf="totalPages > 1">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+            </li>
+            <li 
+                class="page-item" 
+                *ngFor="let page of [].constructor(totalPages); let i = index" 
+                [class.active]="currentPage === (i + 1)"
+            >
+                <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Create Event Button -->
+    <div class="row pt-2 justify-content-center">
         <div class="col-lg-4 col-12">
-            <button class="btn btn-primary" (click)="createEvent()">Create Event</button>
+            <button class="btn btn-primary w-100" (click)="createEvent()">Create Event</button>
         </div>
     </div>
 </div>
