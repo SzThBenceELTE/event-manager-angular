@@ -70,6 +70,7 @@
                         <th class="d-table-cell">End Date</th>
                         <th class="d-table-cell">Current Participants</th>
                         <th class="d-table-cell">Max Participants</th>
+                        <th class="d-table-cell">Subevents</th>
                         <th class="d-table-cell">Actions</th>
                     </tr>
                 </thead>
@@ -81,6 +82,11 @@
                         <td class="d-table-cell">{{event.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
                         <td class="d-table-cell">{{event.currentParticipants}}</td>
                         <td class="d-table-cell">{{event.maxParticipants}}</td>
+                        <td class="d-table-cell">
+                            <div *ngFor="let subevent of event.subevents">
+                                {{ subevent.name }}
+                            </div>
+                        </td>
                         <td class="d-table-cell">
                             <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">Edit</button>
                             <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">Delete</button>

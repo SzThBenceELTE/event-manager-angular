@@ -16,7 +16,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { AuthInterceptor } from './services/auth/auth.interceptor';
+import { AuthService } from './services/auth/auth.service'; // Ensure you have AuthService
 
 
 const appRoutes: Routes = [
@@ -51,6 +52,12 @@ const appRoutes: Routes = [
     ],
     providers: [
       { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+      AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
       MatDatepickerModule,
       MatNativeDateModule,
     ],

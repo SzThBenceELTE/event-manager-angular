@@ -7,4 +7,7 @@ export interface EventModel {
     startDate: Date;
     endDate: Date;
     maxParticipants: number;
+    currentParticipants: number;
+    parentId?: number;
+    subevents?: EventModel[];
 }

@@ -34,6 +34,7 @@ export class EditEventComponent implements OnInit {
     startTime: string = '';
     endTime: string = '';
     formatLabel: (value: number) => string;
+    parentEvents: EventService[] = [];
 
     maxParticipants: number = 10; // Initialize with default or fetched value
 
@@ -58,6 +59,7 @@ export class EditEventComponent implements OnInit {
                 this.startTime = this.formatTime(data.startDate);
                 this.endTime = this.formatTime(data.endDate);
                 this.maxParticipants = data.maxParticipants || 10;
+                this.parentEvents = data.filter((event: { parentId: any; }) => !event.parentId);
             },
             error: (err) => {
                 console.error('Failed to load event data', err);

@@ -37,6 +37,18 @@ export class CreateEventComponent {
     maxParticipants: number = 10; // Default value set to 10
     startTime: string = '00:00';
     endTime: string = '23:59';
+    parentEvents: EventModel[] = [];
+
+    event: EventModel = {
+        id: 0,
+        name: '',
+        type: EventTypeEnum.MEETING,
+        startDate: new Date(),
+        endDate: new Date(),
+        maxParticipants: 10,
+        currentParticipants: 0,
+        parentId: undefined, // Initialize parentId
+    };
 
     constructor(
         public eventService: EventService,
@@ -47,6 +59,22 @@ export class CreateEventComponent {
             return value.toString();
         }
     }
+
+    ngOnInit() {
+        this.loadParentEvents();
+    }
+
+    loadParentEvents(): void {
+        this.eventService.getEvents().subscribe({
+          next: (events) => {
+            // Exclude subevents to prevent circular references
+            this.parentEvents = events.filter((event: EventModel) => event.parentId == null);
+          },
+          error: (err) => {
+            console.error('Error fetching parent events:', err);
+          },
+        });
+      }
 
     onSubmit(createEventForm: any): void {
         const { name, type, startDate, endDate, maxParticipants } = createEventForm.value;
@@ -103,7 +131,8 @@ export class CreateEventComponent {
             type, 
             startDate: fullStartDate, 
             endDate: fullEndDate, 
-            maxParticipants 
+            maxParticipants,
+            parentId: this.event.parentId
         }).subscribe({
             next: () => {
                 this.openSuccessSnackbar('Event created successfully!');

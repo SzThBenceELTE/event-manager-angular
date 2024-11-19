@@ -14,6 +14,7 @@ export class AuthService {
   private apiUrl = 'http://localhost:3000/api/users'; // Change to your login API endpoint
 
   private currentPerson: PersonModel | null = null;
+  private tokenKey = 'loginToken';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -50,10 +51,10 @@ export class AuthService {
       );
   }
 
-  // Add method to get the token
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+  // // Add method to get the token
+  // getToken(): string | null {
+  //   return localStorage.getItem('token');
+  // }
 
   logout() {
     localStorage.removeItem('loginToken');
@@ -96,6 +97,21 @@ export class AuthService {
   clearCurrentPerson(): void {
     this.currentPerson = null;
     localStorage.removeItem('currentPerson');
+  }
+
+  // Store the token (call this after successful login)
+  storeToken(token: string) {
+    localStorage.setItem(this.tokenKey, token);
+  }
+
+  // Retrieve the token
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  // Remove the token (call this on logout)
+  removeToken() {
+    localStorage.removeItem(this.tokenKey);
   }
   
 }
