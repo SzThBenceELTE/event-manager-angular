@@ -24,9 +24,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   ],
 })
 export class EventListComponent implements OnInit {
-  events: EventModel[] = [];
-  filteredEvents: EventModel[] = [];
-  paginatedEvents: EventModel[] = [];
+  events: any[] = [];
+  filteredEvents: any[] = [];
+  paginatedEvents: any[] = [];
 
   searchTerm: string = '';
   selectedEventType: EventTypeEnum | null = null;
