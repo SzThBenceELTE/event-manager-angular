@@ -1,4 +1,5 @@
 import { EventTypeEnum } from "./enums/event-type.enum";
+import { GroupTypeEnum } from "./enums/group-type.enum";
 
 export interface EventModel {
     id: number;
@@ -10,4 +11,5 @@ export interface EventModel {
     currentParticipants: number;
     parentId?: number;
     subevents?: EventModel[];
+    groups?: GroupTypeEnum[];
 }

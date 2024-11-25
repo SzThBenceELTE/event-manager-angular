@@ -138,6 +138,23 @@
                         End Time is required.
                     </div>
                 </div>
+                <!-- Assign to Groups with Checkboxes -->
+                <div class="form-group mb-3">
+                    <label class="form-label">Assign to Groups</label>
+                    <div *ngFor="let group of availableGroups" class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [id]="'group-' + group"
+                            [value]="group"
+                            (change)="onGroupChange($event, group)"
+                            [checked]="selectedGroups.includes(group)"
+                        />
+                        <label class="form-check-label" [for]="'group-' + group">
+                            {{ group }}
+                        </label>
+                    </div>
+                </div>
 
                 <!-- Maximum Number of Participants Field -->
                 <div class="form-group mb-3">

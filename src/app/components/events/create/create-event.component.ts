@@ -13,6 +13,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSliderModule } from '@angular/material/slider';
 import { IgxTimePickerModule } from 'igniteui-angular';
 import { MatSnackBar } from "@angular/material/snack-bar";
+//import { GroupService } from '../../../services/group/group.service'; // Import GroupService
+//import { GroupModel } from '../../../models/group.model'; // Import GroupModel
+import { GroupTypeEnum } from "../../../models/enums/group-type.enum";
 
 @Component({
     selector: 'create-event',
@@ -32,12 +35,15 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 })
 export class CreateEventComponent {
     eventTypes = Object.values(EventTypeEnum);
+    availableGroups = Object.values(GroupTypeEnum);
     formatLabel: (value: number) => string;
 
     maxParticipants: number = 10; // Default value set to 10
     startTime: string = '00:00';
     endTime: string = '23:59';
     parentEvents: EventModel[] = [];
+    selectedGroups: GroupTypeEnum[] = []; // Hold selected group IDs
+    formSubmitted: boolean = false;
 
     event: EventModel = {
         id: 0,
@@ -48,12 +54,14 @@ export class CreateEventComponent {
         maxParticipants: 10,
         currentParticipants: 0,
         parentId: undefined, // Initialize parentId
+        
     };
 
     constructor(
         public eventService: EventService,
         private router: Router,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        //private groupService: GroupService // Inject GroupService
     ) {
         this.formatLabel = (value: number) => {
             return value.toString();
@@ -62,6 +70,15 @@ export class CreateEventComponent {
 
     ngOnInit() {
         this.loadParentEvents();
+    }
+
+
+    onGroupChange(event: any, group: GroupTypeEnum): void {
+        if (event.target.checked) {
+            this.selectedGroups.push(group);
+        } else {
+            this.selectedGroups = this.selectedGroups.filter(g => g !== group);
+        }
     }
 
     loadParentEvents(): void {
@@ -77,8 +94,9 @@ export class CreateEventComponent {
       }
 
     onSubmit(createEventForm: any): void {
+        
         const { name, type, startDate, endDate, maxParticipants } = createEventForm.value;
-
+        this.formSubmitted = true;
         // Validate all fields are filled, including startTime and endTime
         if (!name || !type || !startDate || !endDate || !maxParticipants || !this.startTime || !this.endTime) {
             this.openErrorSnackbar('Please fill out all fields');
@@ -132,7 +150,8 @@ export class CreateEventComponent {
             startDate: fullStartDate, 
             endDate: fullEndDate, 
             maxParticipants,
-            parentId: this.event.parentId
+            parentId: this.event.parentId,
+            groups: this.selectedGroups, // Include groups
         }).subscribe({
             next: () => {
                 this.openSuccessSnackbar('Event created successfully!');

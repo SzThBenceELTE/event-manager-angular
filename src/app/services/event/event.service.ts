@@ -4,6 +4,8 @@ import { Observable } from "rxjs";
 import { EventTypeEnum } from "../../models/enums/event-type.enum";
 import { HttpParams } from '@angular/common/http';
 import { EventModel } from "../../models/event.model";
+//import { GroupModel } from "../../models/group.model";
+import { GroupTypeEnum } from "../../models/enums/group-type.enum";
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +19,11 @@ export class EventService {
         return this.http.get<EventModel[]>(this.apiUrl);
     }
 
-    createEvent(event: { name: string; type: EventTypeEnum; startDate: Date; endDate: Date; maxParticipants: number; parentId: number | undefined }): Observable<any> {
+    // getGroups(): Observable<GroupModel[]> {
+    //     return this.http.get<GroupModel[]>(`${this.apiUrl}/groups`);
+    //   }
+
+    createEvent(event: { name: string; type: EventTypeEnum; startDate: Date; endDate: Date; maxParticipants: number; parentId: number | undefined; groups: GroupTypeEnum[] }): Observable<any> {
         return this.http.post(this.apiUrl, event);
     }
 
