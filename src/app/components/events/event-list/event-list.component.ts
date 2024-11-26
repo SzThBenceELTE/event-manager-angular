@@ -10,6 +10,9 @@ import { EventTypeEnum } from '../../../models/enums/event-type.enum';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../../services/auth/auth.service';
+import { PersonModel } from '../../../models/person.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-event-list',
@@ -21,6 +24,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatSnackBarModule,
     MatDialogModule,
     ConfirmationDialogComponent,
+    MatProgressSpinnerModule,
   ],
 })
 export class EventListComponent implements OnInit {
@@ -37,15 +41,21 @@ export class EventListComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 1;
 
+  isDeveloper: boolean = false;
+
+  loading: boolean = true;
+
   constructor(
     private eventService: EventService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.fetchEvents();
+    this.checkUserRole();
   }
 
   fetchEvents(): void {
@@ -54,14 +64,37 @@ export class EventListComponent implements OnInit {
         this.events = data;
         this.filteredEvents = data;
         this.calculatePagination();
+        this.checkIfLoadingComplete();
       },
       error: (err) => {
         console.error('Error fetching events:', err);
         this.snackBar.open('Failed to load events.', 'Close', {
           duration: 3000,
         });
+        this.checkIfLoadingComplete();
       },
     });
+  }
+
+  checkUserRole(): void {
+    this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
+      console.log('Current person:', person);
+      if (person?.role === 'DEVELOPER') {
+        this.isDeveloper = true;
+      } else {
+        this.isDeveloper = false;
+      }
+      this.checkIfLoadingComplete();
+    });
+  }
+
+  private loadingTasksCompleted: boolean = false;
+
+  private checkIfLoadingComplete(): void {
+    if (!this.loadingTasksCompleted) {
+      this.loadingTasksCompleted = true;
+      this.loading = false;
+    }
   }
 
   onSearch(): void {

@@ -29,7 +29,12 @@
         }
     }
 </style>
-<div class="container table">
+
+<div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+<div *ngIf="!loading" class="container table">
     <h2>The list of events in the system</h2>
     <!-- Search and Filter Inputs -->
     <div class="row mb-3">
@@ -72,7 +77,7 @@
                         <th class="d-table-cell">Current Participants</th>
                         <th class="d-table-cell">Max Participants</th>
                         <th class="d-table-cell">Subevents</th>
-                        <th class="d-table-cell">Actions</th>
+                        <th *ngIf="!isDeveloper" class="d-table-cell">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +96,7 @@
                                 {{ subevent.name }}
                             </div>
                         </td>
-                        <td class="d-table-cell">
+                        <td *ngIf="!isDeveloper" class="d-table-cell">
                             <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">Edit</button>
                             <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">Delete</button>
                         </td>
@@ -123,7 +128,7 @@
     <!-- Create Event Button -->
     <div class="row pt-2 justify-content-center">
         <div class="col-lg-4 col-12">
-            <button class="btn btn-primary w-100" (click)="createEvent()">Create Event</button>
+            <button *ngIf="!isDeveloper" class="btn btn-primary w-100" (click)="createEvent()">Create Event</button>
         </div>
     </div>
 </div>

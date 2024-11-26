@@ -10,6 +10,9 @@ import { GroupTypeEnum } from '../../../models/enums/group-type.enum';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../../../services/auth/auth.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 @Component({
   selector: 'app-user-list',
@@ -19,7 +22,9 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, FormsModule,
     MatDialogModule,
     MatButtonModule,
-    ConfirmationDialogComponent,],
+    ConfirmationDialogComponent,
+    MatProgressSpinnerModule,
+  ],
 })
 export class PersonListComponent implements OnInit {
   public RoleTypeEnum = RoleTypeEnum;
@@ -40,14 +45,20 @@ export class PersonListComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 1;
 
+  isDeveloper: boolean = false;
+
+  loading: boolean = true;
+
 
   constructor(private personService: PersonService,
      private router: Router, 
      private snackBar: MatSnackBar,
-    private dialog: MatDialog) {}
+    private dialog: MatDialog,
+    private authService : AuthService) {}
 
   ngOnInit() {
     this.fetchPeople();
+    this.checkUserRole();
     this.totalPages = Math.ceil(this.people.length / this.itemsPerPage);
   }
 
@@ -57,14 +68,37 @@ export class PersonListComponent implements OnInit {
         this.people = data;
         this.filteredPeople = data;
         this.calculatePagination();
+        this.checkIfLoadingComplete();
       },
       error: (err) => {
         console.error('Error fetching people:', err);
         this.snackBar.open('Failed to load people.', 'Close', {
           duration: 3000,
         });
+        this.checkIfLoadingComplete();
       }
     });
+  }
+
+  checkUserRole(): void {
+    this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
+      console.log('Current person:', person);
+      if (person?.role === 'DEVELOPER') {
+        this.isDeveloper = true;
+      } else {
+        this.isDeveloper = false;
+      }
+      this.checkIfLoadingComplete();
+    });
+  }
+
+  private loadingTasksCompleted: boolean = false;
+
+  private checkIfLoadingComplete(): void {
+    if (!this.loadingTasksCompleted) {
+      this.loadingTasksCompleted = true;
+      this.loading = false;
+    }
   }
 
   onSearch(): void {

@@ -24,8 +24,17 @@ export class LoginComponent {
       next: (response) => {
         this.loginError = "";
         console.log('Login successful', response);
-        this.authService.setCurrentPerson(username); // Set the current user
-        this.router.navigate(['/users']); // Navigate to the user list or dashboard on successful login
+        // Access the person from the response
+        const person = response.user.Person;
+
+        // Save the person in AuthService
+        this.authService.setCurrentPerson(person);
+
+        // Optionally, set the username
+        this.authService.setUsername(response.user.name);
+
+        // Navigate to the desired route
+        this.router.navigate(['/people']); // Redirect to people list or appropriate page
       },
       error: (err) => {
         this.loginError = "Bad login attempt";

@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { PersonModel } from '../../models/person.model';
+import { UserModel } from '../../models/user.model';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Injectable({
@@ -16,9 +18,44 @@ export class AuthService {
   private currentPerson: PersonModel | null = null;
   private tokenKey = 'loginToken';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private cookieService: CookieService) {
+    this.currentPersonSubject = new BehaviorSubject<PersonModel | null>(
+      this.getCurrentPersonFromCookie()
+    );
+    this.currentPerson$ = this.currentPersonSubject.asObservable();
+  }
 
   private loginTokenSubject = new BehaviorSubject<string | null>(null);
+
+  private currentPersonSubject = new BehaviorSubject<PersonModel | null>(null);
+  public currentPerson$ = this.currentPersonSubject.asObservable();
+
+  private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  
+
+  private getCurrentPersonFromCookie(): PersonModel | null {
+    // if (!this.cookieService) {
+    //   console.error('CookieService is not initialized.');
+    //   return null;
+    // }
+    // Check if the 'currentPerson' cookie exists
+    if (this.cookieService.check('currentPerson')) {
+      const personString = this.cookieService.get('currentPerson');
+      try {
+        // Attempt to parse the cookie value as JSON
+        return JSON.parse(personString) as PersonModel;
+      } catch (error) {
+        console.error('Error parsing currentPerson from cookie:', error);
+        return null;
+      }
+    } else {
+      // Cookie does not exist
+      return null;
+    }
+  }
+  
 
   setLoginToken(token: string | null) {
     this.loginTokenSubject.next(token);
@@ -42,11 +79,14 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http
-      .post<{ token: string }>(`${this.apiUrl}/login`, { username, password })
+      .post<{ user: UserModel; token: string }>(`${this.apiUrl}/login`, { username, password })
       .pipe(
         tap((response) => {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('loginToken', response.token);
+          this.cookieService.set('token', response.token);
+          this.cookieService.set('loginToken', response.token);
+          this.cookieService.set(this.tokenKey, response.token);
+          this.setCurrentUser(response.user);
+          this.setCurrentPerson(response.user.Person);
         })
       );
   }
@@ -56,10 +96,12 @@ export class AuthService {
   //   return localStorage.getItem('token');
   // }
 
+  // Adjust logout to clear currentPerson
   logout() {
-    localStorage.removeItem('loginToken');
-    this.router.navigate(['/login']); // Redirect to login page after logout
-    
+    localStorage.removeItem(this.tokenKey);
+    this.clearCurrentUser();
+    this.clearCurrentPerson();
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
@@ -78,35 +120,39 @@ export class AuthService {
 
   setCurrentPerson(person: PersonModel): void {
     this.currentPerson = person;
-    // Optionally, store in localStorage/sessionStorage for persistence
-    localStorage.setItem('currentPerson', JSON.stringify(person));
+    this.currentPersonSubject.next(person);
+    this.cookieService.set('currentPerson', JSON.stringify(person));
   }
 
   getCurrentPerson(): PersonModel | null {
-    // If currentPerson is not set, try to get it from localStorage
-    if (!this.currentPerson) {
-      const personString = localStorage.getItem('currentPerson');
-      if (personString) {
-        this.currentPerson = JSON.parse(personString);
-      }
-    }
     return this.currentPerson;
+  }
+
+  setCurrentUser(user: UserModel): void {
+    this.currentUserSubject.next(user);
+    this.cookieService.set('currentUser', JSON.stringify(user));
+  }
+  
+  clearCurrentUser(): void {
+    this.currentUserSubject.next(null);
+    this.cookieService.delete('currentUser');
   }
 
   // Clear user data on logout
   clearCurrentPerson(): void {
     this.currentPerson = null;
-    localStorage.removeItem('currentPerson');
+    this.currentPersonSubject.next(null);
+    this.cookieService.delete('currentPerson');
   }
 
   // Store the token (call this after successful login)
   storeToken(token: string) {
-    localStorage.setItem(this.tokenKey, token);
+    this.cookieService.set(this.tokenKey, token);
   }
 
   // Retrieve the token
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return this.cookieService.get(this.tokenKey) || null;
   }
 
   // Remove the token (call this on logout)

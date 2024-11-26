@@ -29,7 +29,12 @@
         }
     }
 </style>
-<div class="container table">
+
+<div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+<div *ngIf="!loading" class="container table">
     <h2>The list of people in the system</h2>
     <!-- Search and Filter Inputs -->
     <div class="row mb-3">
@@ -75,7 +80,7 @@
                         <th class="d-table-cell">Surname</th>
                         <th class="d-table-cell">Role</th>
                         <th class="d-table-cell">Group</th>
-                        <th class="d-table-cell">Actions</th>
+                        <th *ngIf="!isDeveloper" class="d-table-cell">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,7 +90,7 @@
                         <td class="d-table-cell">{{person.surname}}</td>
                         <td class="d-table-cell">{{person.role}}</td>
                         <td class="d-table-cell">{{person.group}}</td>
-                        <td class="d-table-cell">
+                        <td *ngIf="!isDeveloper" class="d-table-cell">
                             <button class="btn btn-secondary m-1" (click)="editPerson(person.id)">Edit</button>
                             <button class="btn btn-danger m-1" (click)="deletePerson(person.id)">Delete</button>
                         </td>
@@ -117,7 +122,7 @@
     <!-- Create User Button -->
     <div class="row pt-2 justify-content-center">
         <div class="col-lg-4 col-12">
-            <button class="btn btn-primary w-100" (click)="createPerson()">Create User</button>
+            <button *ngIf="!isDeveloper" class="btn btn-primary w-100" (click)="createPerson()">Create User</button>
         </div>
     </div>
 </div>
