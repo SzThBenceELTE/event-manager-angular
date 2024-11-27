@@ -13,6 +13,16 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth/auth.service';
 import { PersonModel } from '../../../models/person.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  query,
+  stagger,
+} from '@angular/animations';
+import { SubeventDialogComponent } from '../subevent-dialog/subevent-dialog.conponent';
+
 
 @Component({
   selector: 'app-event-list',
@@ -25,6 +35,30 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDialogModule,
     ConfirmationDialogComponent,
     MatProgressSpinnerModule,
+    SubeventDialogComponent,
+  ],
+  animations: [
+    trigger('listAnimation', [
+      transition('* => *', [
+        query(
+          ':enter',
+          [style({ opacity: 0 })],
+          { optional: true }
+        ),
+        query(
+          ':enter',
+          [
+            stagger('100ms', [
+              animate(
+                '600ms ease-in',
+                style({ opacity: 1 })
+              ),
+            ]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
   ],
 })
 export class EventListComponent implements OnInit {
@@ -176,5 +210,13 @@ export class EventListComponent implements OnInit {
       (this.currentPage - 1) * this.itemsPerPage,
       this.currentPage * this.itemsPerPage
     );
+  }
+
+  openSubeventDialog(subevent: EventModel): void {
+    console.log('Subevent Data:', subevent); // Debugging line
+    this.dialog.open(SubeventDialogComponent, {
+      width: '400px',
+      data: subevent,
+    });
   }
 }

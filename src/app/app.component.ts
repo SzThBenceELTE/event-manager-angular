@@ -15,6 +15,7 @@ import { PersonModel } from './models/person.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  isNavbarCollapsed = true;
   isLoggedIn: boolean = false;
   currentPerson$: Observable<PersonModel | null>;
 

@@ -83,7 +83,7 @@
                         <th *ngIf="!isDeveloper" class="d-table-cell">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody [@listAnimation]>
                     <tr *ngFor="let person of paginatedPeople" class="d-table-row">
                         <td class="d-table-cell">{{person.id}}</td>
                         <td class="d-table-cell">{{person.firstName}}</td>

@@ -12,6 +12,14 @@ import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmat
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../services/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  query,
+  stagger,
+} from '@angular/animations';
 
 
 @Component({
@@ -25,6 +33,45 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ConfirmationDialogComponent,
     MatProgressSpinnerModule,
   ],
+  animations: [
+    trigger('listAnimation', [
+      // Animate the list on any state change
+      transition('* => *', [
+        // Initially hide all new elements
+        query(
+          ':enter',
+          [style({ opacity: 0 })],
+          { optional: true }
+        ),
+        // Animate in the new elements one by one
+        query(
+          ':enter',
+          [
+            stagger('100ms', [
+              animate(
+                '600ms ease-in',
+                style({ opacity: 1 })
+              ),
+            ]),
+          ],
+          { optional: true }
+        ),
+        // Optionally animate out the removed elements
+        // query(
+        //   ':leave',
+        //   [
+        //     stagger('100ms', [
+        //       animate(
+        //         '600ms ease-out',
+        //         style({ opacity: 0 })
+        //       ),
+        //     ]),
+        //   ],
+        //   { optional: true }
+        // ),
+      ]),
+    ]),
+  ]
 })
 export class PersonListComponent implements OnInit {
   public RoleTypeEnum = RoleTypeEnum;

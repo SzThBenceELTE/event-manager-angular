@@ -20,6 +20,7 @@ import { AuthInterceptor } from './services/auth/auth.interceptor';
 import { AuthService } from './services/auth/auth.service'; // Ensure you have AuthService
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 const appRoutes: Routes = [
@@ -52,6 +53,7 @@ const appRoutes: Routes = [
       NgxMaterialTimepickerModule,
       MatSnackBarModule,
       HttpClientModule,
+      BrowserAnimationsModule,
     ],
     providers: [ CookieService,
       { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

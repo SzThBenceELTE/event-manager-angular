@@ -80,7 +80,7 @@
                         <th *ngIf="!isDeveloper" class="d-table-cell">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody [@listAnimation]>
                     <tr *ngFor="let event of paginatedEvents" class="d-table-row">
                         <td class="d-table-cell">{{event.name}}</td>
                         <td class="d-table-cell">{{event.type}}</td>
@@ -93,9 +93,11 @@
                         <td class="d-table-cell">{{event.maxParticipants}}</td>
                         <td class="d-table-cell">
                             <div *ngFor="let subevent of event.subevents">
-                                {{ subevent.name }}
+                              <a href="#" (click)="openSubeventDialog(subevent); $event.preventDefault();">
+                                <strong>{{ subevent.name }}</strong>
+                              </a>
                             </div>
-                        </td>
+                          </td>
                         <td *ngIf="!isDeveloper" class="d-table-cell">
                             <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">Edit</button>
                             <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">Delete</button>
