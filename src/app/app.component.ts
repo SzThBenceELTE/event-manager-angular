@@ -2,31 +2,59 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth/auth.service';
-import { BehaviorSubject } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { PersonModel } from './models/person.model';
-
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, RouterLink, CommonModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('menuAnimation', [
+      state(
+        'closed',
+        style({
+          height: '0',
+          overflow: 'hidden',
+        })
+      ),
+      state(
+        'open',
+        style({
+          height: '*',
+        })
+      ),
+      transition('closed <=> open', animate('300ms ease-in-out')),
+    ]),
+  ],
 })
 export class AppComponent implements OnInit {
   isNavbarCollapsed = true;
   isLoggedIn: boolean = false;
   currentPerson$: Observable<PersonModel | null>;
+  menuState = 'closed';
 
   constructor(private authService: AuthService) {
     this.currentPerson$ = this.authService.currentPerson$;
   }
 
   ngOnInit() {
-    this.currentPerson$.subscribe(person => {
+    this.currentPerson$.subscribe((person) => {
       this.isLoggedIn = !!person;
     });
+  }
+
+  toggleNavbar() {
+    this.isNavbarCollapsed = !this.isNavbarCollapsed;
+    this.menuState = this.isNavbarCollapsed ? 'closed' : 'open';
   }
 
   logout() {
