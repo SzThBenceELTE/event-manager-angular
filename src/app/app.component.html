@@ -20,21 +20,17 @@
     >
       <ul class="navbar-nav me-auto">
         <!-- Nav items -->
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" routerLink="/people">People</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" routerLink="/events">Events</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link" routerLink="/register">Register</a>
         </li>
-        <li class="nav-item">
-          <span class="navbar-text">
-            <ng-container *ngIf="isLoggedIn">
-              Welcome, {{ (currentPerson$ | async)?.firstName }}!
-            </ng-container>
-          </span>
+        <li class="nav-item"  *ngIf="isLoggedIn">
+            <a class="nav-link" disabled> Welcome, {{ (currentPerson$ | async)?.firstName }}! </a>  
         </li>
         <li class="nav-item" *ngIf="isLoggedIn">
           <span>

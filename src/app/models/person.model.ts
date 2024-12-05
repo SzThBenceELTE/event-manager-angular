@@ -7,4 +7,5 @@ export interface PersonModel {
     surname: string;
     role: RoleTypeEnum;
     group?: GroupTypeEnum; // Optional field
+    UserId?: number; // Optional field
   }

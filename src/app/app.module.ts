@@ -21,6 +21,8 @@ import { AuthService } from './services/auth/auth.service'; // Ensure you have A
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UnauthorizedComponent } from './components/unathorized/unauthorized.component';
+import { AuthGuard } from './services/auth/auth.guard';
 
 
 const appRoutes: Routes = [
@@ -35,7 +37,7 @@ const appRoutes: Routes = [
 
 @NgModule({
     declarations: [
-     
+     UnauthorizedComponent,
    
       // other components
     ],
@@ -65,6 +67,7 @@ const appRoutes: Routes = [
     },
       MatDatepickerModule,
       MatNativeDateModule,
+      AuthGuard,
       
     ],
     bootstrap: []

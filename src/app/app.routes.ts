@@ -11,13 +11,12 @@ import { CreateEventComponent } from './components/events/create/create-event.co
 import { EditEventComponent } from './components/events/edit/edit-event.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { UnauthorizedComponent } from './components/unathorized/unauthorized.component';
+import { AuthGuard } from './services/auth/auth.guard';
 
 export const routes: Routes = [
     // 
-    {
-        path: 'users',
-        component: UserListComponent
-    },
+    
     {
         path: 'login',
         component: LoginComponent
@@ -26,29 +25,43 @@ export const routes: Routes = [
         path: 'register',
         component: RegisterComponent
     },
+    {   
+        path: 'unauthorized', 
+        component: UnauthorizedComponent },
+    {
+        path: 'users',
+        component: UserListComponent,
+        canActivate: [AuthGuard],
+    },
     {
         path: 'people',
-        component: PersonListComponent
+        component: PersonListComponent,
+        canActivate: [AuthGuard],
     },
     {
         path: 'people/create',
-        component: CreatePersonComponent
+        component: CreatePersonComponent,
+        canActivate: [AuthGuard],
     },
     {
         path: 'people/edit/:id',
-        component: EditPersonComponent
+        component: EditPersonComponent,
+        canActivate: [AuthGuard],
     },
     {
         path: 'events',
-        component: EventListComponent
+        component: EventListComponent,
+        canActivate: [AuthGuard],
     },
     {
         path: 'events/create',
-        component: CreateEventComponent
+        component: CreateEventComponent,
+        canActivate: [AuthGuard],
     },
     {
         path: 'events/edit/:id',
-        component: EditEventComponent
+        component: EditEventComponent,
+        canActivate: [AuthGuard],
     },
     // { path: '', component: HomePageComponent },
     { path: '**', redirectTo: '', pathMatch: 'full' } // Wildcard route

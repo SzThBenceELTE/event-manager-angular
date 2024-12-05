@@ -96,12 +96,15 @@ export class PersonListComponent implements OnInit {
 
   loading: boolean = true;
 
+  currentUserId?: number;
 
   constructor(private personService: PersonService,
      private router: Router, 
      private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private authService : AuthService) {}
+    private authService : AuthService) {
+      
+    }
 
   ngOnInit() {
     this.fetchPeople();
@@ -128,6 +131,12 @@ export class PersonListComponent implements OnInit {
   }
 
   checkUserRole(): void {
+    this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
+      if (person) {
+        this.currentUserId = person.UserId;
+        console.log('Current UserID:', this.currentUserId);
+      }
+    });
     this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
       console.log('Current person:', person);
       if (person?.role === 'DEVELOPER') {
@@ -190,11 +199,11 @@ export class PersonListComponent implements OnInit {
       width: '350px',
       data: { message: 'Are you sure you want to delete this person?' },
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.personService.deletePerson(id).subscribe({
-          next: (response) => {
+          next: () => {
             this.snackBar.open('Person deleted successfully!', 'Close', {
               duration: 3000,
             });
@@ -206,9 +215,15 @@ export class PersonListComponent implements OnInit {
           },
           error: (err) => {
             console.error('Person deletion failed', err);
-            this.snackBar.open('Failed to delete person.', 'Close', {
-              duration: 3000,
-            });
+            if (err.status === 403) {
+              this.snackBar.open('You cannot delete yourself.', 'Close', {
+                duration: 3000,
+              });
+            } else {
+              this.snackBar.open('Failed to delete person.', 'Close', {
+                duration: 3000,
+              });
+            }
           },
         });
       }

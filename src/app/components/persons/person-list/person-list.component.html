@@ -92,7 +92,13 @@
                         <td class="d-table-cell">{{person.group}}</td>
                         <td *ngIf="!isDeveloper" class="d-table-cell">
                             <button class="btn btn-secondary m-1" (click)="editPerson(person.id)">Edit</button>
-                            <button class="btn btn-danger m-1" (click)="deletePerson(person.id)">Delete</button>
+                            <button
+                                class="btn btn-danger m-1"
+                                (click)="deletePerson(person.id)"
+                                [disabled]="person.UserId === currentUserId"
+                                >
+                                Delete
+                                </button>
                         </td>
                     </tr>
                 </tbody>
