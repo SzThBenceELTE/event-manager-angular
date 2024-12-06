@@ -184,6 +184,11 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="image">Event Image</label>
+                    <input type="file" (change)="onFileSelected($event)" />
+                </div>
+
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary w-100">
                     Create

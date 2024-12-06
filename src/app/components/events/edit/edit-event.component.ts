@@ -35,6 +35,7 @@ export class EditEventComponent implements OnInit {
     endTime: string = '';
     formatLabel: (value: number) => string;
     parentEvents: EventService[] = [];
+    selectedFile: File | null = null;
 
     maxParticipants: number = 10; // Initialize with default or fetched value
 
@@ -67,6 +68,14 @@ export class EditEventComponent implements OnInit {
             }
         });
     }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+    
+        if (input.files && input.files.length) {
+          this.selectedFile = input.files[0];
+        }
+      }
 
     /**
      * Formats a Date object or ISO string to 'HH:MM' format.

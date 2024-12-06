@@ -9,6 +9,7 @@ export interface EventModel {
     endDate: Date;
     maxParticipants: number;
     currentParticipants: number;
+    imagePath?: string;
     parentId?: number;
     subevents?: EventModel[];
     groups?: GroupTypeEnum[];

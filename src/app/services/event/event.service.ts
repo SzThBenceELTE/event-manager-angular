@@ -23,8 +23,9 @@ export class EventService {
     //     return this.http.get<GroupModel[]>(`${this.apiUrl}/groups`);
     //   }
 
-    createEvent(event: { name: string; type: EventTypeEnum; startDate: Date; endDate: Date; maxParticipants: number; parentId: number | undefined; groups: GroupTypeEnum[] }): Observable<any> {
-        return this.http.post(this.apiUrl, event);
+    createEvent(eventData: FormData): Observable<any> {
+        console.log(eventData);
+        return this.http.post(this.apiUrl, eventData);
     }
 
     getEvent(id: number): Observable<any> {

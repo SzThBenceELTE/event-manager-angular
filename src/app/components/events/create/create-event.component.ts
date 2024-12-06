@@ -44,6 +44,7 @@ export class CreateEventComponent {
     parentEvents: EventModel[] = [];
     selectedGroups: GroupTypeEnum[] = []; // Hold selected group IDs
     formSubmitted: boolean = false;
+    selectedFile: File | null = null;
 
     event: EventModel = {
         id: 0,
@@ -71,6 +72,14 @@ export class CreateEventComponent {
     ngOnInit() {
         this.loadParentEvents();
     }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+    
+        if (input.files && input.files.length) {
+          this.selectedFile = input.files[0];
+        }
+      }
 
 
     onGroupChange(event: any, group: GroupTypeEnum): void {
@@ -143,23 +152,40 @@ export class CreateEventComponent {
             return;
         }
 
-        // Create the event
-        this.eventService.createEvent({ 
-            name, 
-            type, 
-            startDate: fullStartDate, 
-            endDate: fullEndDate, 
-            maxParticipants,
-            parentId: this.event.parentId,
-            groups: this.selectedGroups, // Include groups
-        }).subscribe({
+        // Create FormData and append fields
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('type', type);
+        formData.append('startDate', fullStartDate.toISOString());
+        formData.append('endDate', fullEndDate.toISOString());
+        formData.append('maxParticipants', maxParticipants.toString());
+
+        // Append image file
+        if (this.selectedFile) {
+            formData.append('image', this.selectedFile, this.selectedFile.name);
+        }
+
+        // Append parentId if exists
+        if (this.event.parentId) {
+            formData.append('parentId', this.event.parentId.toString());
+        }
+
+        // Append groups if any
+        if (this.selectedGroups && this.selectedGroups.length > 0) {
+            this.selectedGroups.forEach((group) => {
+              formData.append('groups', group);
+            });
+          }
+
+        // Call the service method
+        this.eventService.createEvent(formData).subscribe({
             next: () => {
-                this.openSuccessSnackbar('Event created successfully!');
-                this.router.navigate(['/events']);
+            this.openSuccessSnackbar('Event created successfully!');
+            this.router.navigate(['/events']);
             },
             error: (err) => {
-                this.openErrorSnackbar('Failed to create event.');
-                console.error('Event creation failed', err);
+            this.openErrorSnackbar('Failed to create event.');
+            console.error('Event creation failed', err);
             },
         });
     }
