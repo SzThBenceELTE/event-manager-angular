@@ -32,8 +32,8 @@ export class EventService {
         return this.http.get(`${this.apiUrl}/${id}`);
     }
 
-    updateEvent(id: number, event: { name: string; type: EventTypeEnum; startDate: Date; endDate: Date; maxParticipants: number }): Observable<any> {
-        return this.http.put(`${this.apiUrl}/${id}`, event);
+    updateEvent(id: number, eventData : FormData): Observable<any> {
+        return this.http.put(`${this.apiUrl}/${id}`, eventData);
     }
 
     deleteEvent(id: number): Observable<any> {

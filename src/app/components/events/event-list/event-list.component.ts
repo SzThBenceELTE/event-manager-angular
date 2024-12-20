@@ -214,9 +214,14 @@ export class EventListComponent implements OnInit {
 
   openSubeventDialog(subevent: EventModel): void {
     console.log('Subevent Data:', subevent); // Debugging line
-    this.dialog.open(SubeventDialogComponent, {
+    const dialogRef = this.dialog.open(SubeventDialogComponent, {
       width: '400px',
       data: subevent,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.action === 'edited' || result?.action === 'deleted') {
+        this.fetchEvents();
+      }
     });
   }
 }

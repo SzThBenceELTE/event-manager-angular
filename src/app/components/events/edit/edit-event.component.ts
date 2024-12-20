@@ -11,6 +11,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { GroupTypeEnum } from "../../../models/enums/group-type.enum";
+import { EventModel } from "../../../models/event.model";
 
 @Component({
     selector: 'edit-event',
@@ -29,15 +31,22 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 })
 export class EditEventComponent implements OnInit {
     eventTypes = Object.values(EventTypeEnum);
+    availableGroups = Object.values(GroupTypeEnum);
     id!: number;
     event: any;
+    name: string = '';
+    type: EventTypeEnum = EventTypeEnum.MEETING;
     startTime: string = '';
     endTime: string = '';
+    startDate: Date = new Date();
+    endDate: Date = new Date();
     formatLabel: (value: number) => string;
-    parentEvents: EventService[] = [];
+    parentEvents: EventModel[] = [];
     selectedFile: File | null = null;
-
+    selectedGroups: GroupTypeEnum[] = []; // Hold selected group IDs
+    currentParticipants: number = 0; // Initialize with default or fetched value
     maxParticipants: number = 10; // Initialize with default or fetched value
+    parentId: number | undefined = undefined; // Initialize parentId
 
     constructor(
         private eventService: EventService,
@@ -53,20 +62,35 @@ export class EditEventComponent implements OnInit {
     ngOnInit() {
         this.id = Number(this.route.snapshot.params['id']);
         // Fetch existing event data by ID
+        this.loadParentEvents();
         this.eventService.getEvent(this.id).subscribe({
             next: (data) => {
                 console.log('Event data loaded successfully', data);
                 this.event = data;
+                this.id = data.id;
+                this.name = data.name || '';
+                this.type = data.type || EventTypeEnum.MEETING;
                 this.startTime = this.formatTime(data.startDate);
                 this.endTime = this.formatTime(data.endDate);
                 this.maxParticipants = data.maxParticipants || 10;
-                this.parentEvents = data.filter((event: { parentId: any; }) => !event.parentId);
+                this.currentParticipants = data.currentParticipants || 0;
+                //this.parentEvents = data.filter((event: { parentId: any; }) => !event.parentId);
+                this.setSelectedGroups(data.groups);
+                this.parentId = data.parentId;
+
             },
             error: (err) => {
                 console.error('Failed to load event data', err);
                 this.router.navigate(['/events']); // Redirect if event not found
             }
         });
+    }
+
+    setSelectedGroups(groups: GroupTypeEnum[]): void {
+        for (const group of groups) {
+            this.selectedGroups.push(group);
+        }
+        console.log('Selected groups:', this.selectedGroups);
     }
 
     onFileSelected(event: Event) {
@@ -91,16 +115,41 @@ export class EditEventComponent implements OnInit {
         return `${hours}:${minutes}`;
     }
 
-    onSubmit(editEventForm: any) {
-        const { name, type, startDate, endDate } = editEventForm.value;
+    onGroupChange(event: any, group: GroupTypeEnum): void {
+        if (event.target.checked) {
+            this.selectedGroups.push(group);
+        } else {
+            this.selectedGroups = this.selectedGroups.filter(g => g !== group);
+        }
+    }
 
-        // Validate all fields are filled, including startTime and endTime
-        if (!name || !type || !startDate || !endDate || !this.maxParticipants || !this.startTime || !this.endTime) {
+    loadParentEvents(): void {
+            this.eventService.getEvents().subscribe({
+              next: (events) => {
+                // Exclude subevents to prevent circular references
+                this.parentEvents = events.filter((event: EventModel) => event.parentId == null);
+              },
+              error: (err) => {
+                console.error('Error fetching parent events:', err);
+              },
+            });
+          }
+
+    onSubmit(editEventForm: any) {
+        const { name, type, startDate, endDate, maxParticipants } = editEventForm.value;
+        console.log('name', name);
+        console.log('type', type);
+        console.log('startDate', startDate);
+        console.log('endDate', endDate);
+        console.log('maxParticipants', maxParticipants);
+
+        // Validate all fields are filled, including startDate and endDate
+        if (!name || !type || !startDate || !endDate || !maxParticipants || !this.startDate || !this.endDate) {
             this.openErrorSnackbar('Please fill out all fields');
             return;
         }
 
-        // Parse startTime and endTime
+        // Parse startDate and endDate
         const [startHour, startMinute] = this.startTime.split(':').map(Number);
         const [endHour, endMinute] = this.endTime.split(':').map(Number);
 
@@ -139,21 +188,47 @@ export class EditEventComponent implements OnInit {
             return;
         }
 
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('type', type);
+        formData.append('startDate', fullStartDate.toISOString());
+        formData.append('endDate', fullEndDate.toISOString());
+        formData.append('maxParticipants', maxParticipants.toString());
+        
+        // Append image file
+        if (this.selectedFile) {
+            formData.append('image', this.selectedFile, this.selectedFile.name);
+        }
+
+        // Append parentId if exists
+        if (this.event.parentId) {
+            formData.append('parentId', this.event.parentId.toString());
+        }
+        
+        console.log('selectedGroups', this.selectedGroups);
+        if (this.selectedGroups && this.selectedGroups.length > 0) {
+            this.selectedGroups.forEach((group) => {
+              formData.append('groups', group);
+            });
+          }
+
+        // console.log('formData', formData.get('name'));
+        // console.log('formData', formData.get('type'));
+        // console.log('formData', formData.get('startDate'));
+        // console.log('formData', formData.get('endDate'));
+        // console.log('formData', formData.get('maxParticipants'));
+        // console.log('formData', formData.get('image'));
+        // console.log('formData', formData.get('groups'));
+
         // Update the event
-        this.eventService.updateEvent(this.id, { 
-            name, 
-            type, 
-            startDate: fullStartDate, 
-            endDate: fullEndDate, 
-            maxParticipants: this.maxParticipants 
-        }).subscribe({
+        this.eventService.updateEvent(this.id, formData).subscribe({
             next: () => {
                 this.openSuccessSnackbar('Event updated successfully');
                 this.router.navigate(['/events']);
             },
             error: (err) => {
                 console.error('Event update failed', err);
-                this.openErrorSnackbar('Failed to update event.');
+                this.openErrorSnackbar('Failed to update event. ' + err.error.message);
             }
         });
     }

@@ -184,7 +184,7 @@ export class CreateEventComponent {
             this.router.navigate(['/events']);
             },
             error: (err) => {
-            this.openErrorSnackbar('Failed to create event.');
+            this.openErrorSnackbar('Failed to create event. ' + err.error.message);
             console.error('Event creation failed', err);
             },
         });
