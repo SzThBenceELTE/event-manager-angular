@@ -161,6 +161,10 @@ export class EventListComponent implements OnInit {
     this.router.navigate([`/events/edit/${id}`]);
   }
 
+  cloneEvent(id: number): void {
+    this.router.navigate([`/events/clone/${id}`]);
+  }
+
   /**
    * Opens a confirmation dialog before deleting an event.
    * @param id The ID of the event to delete.

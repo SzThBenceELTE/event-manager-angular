@@ -99,6 +99,7 @@
                             </div>
                           </td>
                         <td *ngIf="!isDeveloper" class="d-table-cell">
+                            <button class="btn btn-primary m-1" (click)="cloneEvent(event.id)">Clone</button>
                             <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">Edit</button>
                             <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">Delete</button>
                         </td>

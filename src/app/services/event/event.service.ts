@@ -19,6 +19,10 @@ export class EventService {
         return this.http.get<EventModel[]>(this.apiUrl);
     }
 
+    getAllEvents(): Observable<EventModel[]> {
+        return this.http.get<EventModel[]>(`${this.apiUrl}/all`);
+    }
+
     // getGroups(): Observable<GroupModel[]> {
     //     return this.http.get<GroupModel[]>(`${this.apiUrl}/groups`);
     //   }

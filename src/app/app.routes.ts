@@ -14,6 +14,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UnauthorizedComponent } from './components/unathorized/unauthorized.component';
 import { AuthGuard } from './services/auth/auth.guard';
 import { StatisticsComponent } from './components/statistics/statistics.component';
+import { CloneEventComponent } from './components/events/clone/clone-event.component';
 
 export const routes: Routes = [
     // 
@@ -62,6 +63,11 @@ export const routes: Routes = [
     {
         path: 'events/edit/:id',
         component: EditEventComponent,
+        canActivate: [AuthGuard],
+    },
+    {
+        path: 'events/clone/:id',
+        component: CloneEventComponent,
         canActivate: [AuthGuard],
     },
     {

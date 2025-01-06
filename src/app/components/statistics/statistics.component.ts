@@ -59,7 +59,7 @@ export class StatisticsComponent implements OnInit {
   loadEventStatistics() {
     this.eventService.getEvents().subscribe((events) => {
       this.totalEvents = events.length;
-
+      console.log(events);
       // Initialize counts
       for (const type of Object.values(EventTypeEnum)) {
         this.eventTypeCounts[type] = 0;
@@ -68,9 +68,10 @@ export class StatisticsComponent implements OnInit {
       events.forEach((event) => {
         if (event.type && this.eventTypeCounts.hasOwnProperty(event.type)) {
           this.eventTypeCounts[event.type]++;
-          console.log(this.eventTypeCounts);
+          
         }
       });
+      console.log(this.eventTypeCounts);
       this.eventTypeKeys().forEach((key) => {
         this.eventTypeData.push({ name: key.toString(), value: this.eventTypeCounts[key] });
       });
