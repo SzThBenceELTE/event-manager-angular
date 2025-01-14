@@ -26,6 +26,11 @@ export class SubeventDialogComponent {
     this.dialogRef.close();
   }
 
+  cloneSubevent(): void {
+    this.dialogRef.close({ action: 'cloned' });
+    this.router.navigate(['/events/clone', this.data.id ]);
+  }
+
   editSubevent(): void {
     this.dialogRef.close({ action: 'edited' });
     this.router.navigate(['/events/edit', this.data.id]);

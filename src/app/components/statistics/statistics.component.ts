@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
 import { EventService } from '../../services/event/event.service';
 import { PersonService } from '../../services/person/person.service';
 import { EventTypeEnum } from '../../models/enums/event-type.enum';
@@ -7,6 +7,7 @@ import { RoleTypeEnum } from '../../models/enums/role-type.enum';
 import { GroupTypeEnum } from '../../models/enums/group-type.enum';
 import { PersonModel } from '../../models/person.model';
 import { CommonModule } from '@angular/common';
+import { Color } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-statistics',
@@ -39,9 +40,21 @@ export class StatisticsComponent implements OnInit {
   roleData: { name: string; value: number }[] = [];
   groupData: { name: string; value: number }[] = [];
 
-  colorScheme = {
+  colorScheme: Color = {
+    name: 'eventTypeScheme',
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    selectable: true,
+    group: ScaleType.Ordinal,
   };
+
+  groupsColorScheme: Color = {
+    name: 'groupScheme',
+    domain: ['#FF0000', '#00FF00', '#FFFF00', '#0000FF'],
+    selectable: true,
+    group: ScaleType.Ordinal,
+  };
+
+  defaultColor: string = '#CCCCCC';
 
   constructor(
     private eventService: EventService,
@@ -57,7 +70,7 @@ export class StatisticsComponent implements OnInit {
   }
 
   loadEventStatistics() {
-    this.eventService.getEvents().subscribe((events) => {
+    this.eventService.getAllEvents().subscribe((events) => {
       this.totalEvents = events.length;
       console.log(events);
       // Initialize counts
@@ -122,5 +135,24 @@ export class StatisticsComponent implements OnInit {
 
   groupKeys(): GroupTypeEnum[] {
     return Object.keys(this.groupCounts) as GroupTypeEnum[];
+  }
+
+   // Optional: Define color functions if needed
+   getEventTypeColor(name: string): string {
+    return this.colorScheme.domain[
+      this.eventTypeKeys().indexOf(name as EventTypeEnum)
+    ] || this.defaultColor;
+  }
+
+  getRoleColor(name: string): string {
+    return this.groupsColorScheme.domain[
+      this.roleKeys().indexOf(name as RoleTypeEnum)
+    ] || this.defaultColor;
+  }
+
+  getGroupColor(name: string): string {
+    return this.groupsColorScheme.domain[
+      this.groupKeys().indexOf(name as GroupTypeEnum)
+    ] || this.defaultColor;
   }
 }

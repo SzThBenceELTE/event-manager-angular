@@ -23,9 +23,9 @@
         </ng-template>
       </div>
       <!-- Roles Bar Chart -->
-    <h3>Total Persons: {{ totalPersons }}</h3>
+    <h3>Total People: {{ totalPersons }}</h3>
       <div class="row">
-        <div class="col-md-12" style="height: 400px;">
+        <div class="col-md-6" style="height: 400px;">
           <div *ngIf="roleData.length === 0; else rolesChart">
             Loading Roles...
           </div>
@@ -44,15 +44,15 @@
             </ngx-charts-bar-vertical>
           </ng-template>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12" style="height: 400px;">
+
+        <div class="col-md-6" style="height: 400px;">
             <div *ngIf="groupData.length === 0; else groupsChart">
               Loading Groups...
             </div>
             <ng-template #groupsChart>
               <ngx-charts-bar-vertical
                 [results]="groupData"
+                [scheme]="groupsColorScheme"
                 [legend]="true"
                 [xAxis]="true"
                 [yAxis]="true"

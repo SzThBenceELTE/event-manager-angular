@@ -1,3 +1,20 @@
+<style>
+  .dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Adds a 10px gap between buttons */
+  padding: 20px;
+}
+
+button {
+  min-width: 50px;
+}
+
+
+
+
+</style>
+
 <h2 mat-dialog-title>{{ data.name }}</h2>
 <div mat-dialog-content>
   <p><strong>Type:</strong> {{ data.type }}</p>
@@ -8,7 +25,8 @@
   <p><strong>Max Participants:</strong> {{ data.maxParticipants }}</p>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="editSubevent()">Edit</button>
-  <button mat-button color="warn" (click)="deleteSubevent()">Delete</button>
-  <button mat-button (click)="close()">Close</button>
+  <button color="primary" (click)="cloneSubevent()">Clone</button>
+  <button color="accent" (click)="editSubevent()">Edit</button>
+  <button color="warn" (click)="deleteSubevent()">Delete</button>
+  <button (click)="close()">Close</button>
 </div>
