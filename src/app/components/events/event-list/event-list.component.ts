@@ -22,6 +22,7 @@ import {
   stagger,
 } from '@angular/animations';
 import { SubeventDialogComponent } from '../subevent-dialog/subevent-dialog.conponent';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
@@ -36,6 +37,7 @@ import { SubeventDialogComponent } from '../subevent-dialog/subevent-dialog.conp
     ConfirmationDialogComponent,
     MatProgressSpinnerModule,
     SubeventDialogComponent,
+    MatIconModule,
   ],
   animations: [
     trigger('listAnimation', [
@@ -228,4 +230,6 @@ export class EventListComponent implements OnInit {
       }
     });
   }
+
+  
 }

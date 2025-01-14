@@ -1,31 +1,58 @@
 <div class="container">
-    <h2>Statistics</h2>
-  
-    <!-- Event Types Pie Chart -->
-    <h3>Total Events: {{ totalEvents }}</h3>
-    <div class="row">
-      <div class="col-md-12" style="height: 400px;">
-        <!-- Show loader or placeholder while data is loading -->
-        <div *ngIf="eventTypeData.length === 0; else eventChart">
-          Loading Event Types...
-        </div>
-        <!-- Event Types Pie Chart -->
-        <ng-template #eventChart>
-          <ngx-charts-pie-chart
-            [results]="eventTypeData"
-            [legend]="true"
-            [labels]="true"
-            [explodeSlices]="false"
-            [doughnut]="false"
-            [gradient]="false"
-            >
-          </ngx-charts-pie-chart>
-        </ng-template>
-      </div>
-      <!-- Roles Bar Chart -->
-    <h3>Total People: {{ totalPersons }}</h3>
-      <div class="row">
+    <h1>Statistics</h1>
+
+      <div class="row pb-5">
+      
         <div class="col-md-6" style="height: 400px;">
+          <h2>Active Events: {{ totalEvents }}</h2>
+          
+          <!-- Show loader or placeholder while data is loading -->
+          <div *ngIf="eventTypeData.length === 0; else activeEventChart">
+            Loading Event Types...
+          </div>
+          <ng-template #activeEventChart>
+            <ngx-charts-pie-chart
+              [results]="eventTypeData"
+              [legend]="true"
+              [labels]="true"
+              [explodeSlices]="false"
+              [doughnut]="false"
+              [gradient]="false"
+              >
+            </ngx-charts-pie-chart>
+          </ng-template>
+          <!-- <h3>Total Events: {{ totalEvents }}</h3> -->
+        </div>
+
+        <div class="col-md-6" style="height: 400px;">
+          <h2>All Events Since Launch: {{ allTotalEvents }}</h2>
+          
+          <!-- Show loader or placeholder while data is loading -->
+          <div *ngIf="allEventTypeData.length === 0; else allEventChart">
+            Loading Event Types...
+          </div>
+          <ng-template #allEventChart>
+            <ngx-charts-pie-chart
+              [results]="allEventTypeData"
+              [legend]="true"
+              [labels]="true"
+              [explodeSlices]="false"
+              [doughnut]="false"
+              [gradient]="false"
+              >
+            </ngx-charts-pie-chart>
+          </ng-template>
+          <!-- <h3>Total Events: {{ totalEvents }}</h3> -->
+        </div>
+      </div>
+        
+        
+        <!-- Roles Bar Chart -->
+      
+      <div class="row pt-5">
+        <h2>Total People in the System: {{ totalPersons }}</h2>
+        <div class="col-md-6" style="height: 400px;">
+          <h3>Number of people in each role</h3>
           <div *ngIf="roleData.length === 0; else rolesChart">
             Loading Roles...
           </div>
@@ -38,14 +65,16 @@
               [showDataLabel]="true"
               [showXAxisLabel]="true"
               [showYAxisLabel]="true"
-              [xAxisLabel]="'Roles'"
-              [yAxisLabel]="'Number of Persons'"
+              [xAxisLabel]="'Position'"
+              [yAxisLabel]="'Number of People'"
               >
             </ngx-charts-bar-vertical>
           </ng-template>
+          
         </div>
 
         <div class="col-md-6" style="height: 400px;">
+            <h3>Number of developers in each group</h3>
             <div *ngIf="groupData.length === 0; else groupsChart">
               Loading Groups...
             </div>
@@ -59,16 +88,14 @@
                 [showDataLabel]="true"
                 [showXAxisLabel]="true"
                 [showYAxisLabel]="true"
-                [xAxisLabel]="'Groups'"
-                [yAxisLabel]="'Number of Persons'"
+                [xAxisLabel]="'Developer Groups'"
+                [yAxisLabel]="'Number of People'"
                 >
               </ngx-charts-bar-vertical>
             </ng-template>
           </div>
         </div>
-    </div>
-  
-    
-  </div>
+      </div>
+
 
   

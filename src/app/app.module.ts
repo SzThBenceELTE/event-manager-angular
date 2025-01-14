@@ -23,7 +23,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UnauthorizedComponent } from './components/unathorized/unauthorized.component';
 import { AuthGuard } from './services/auth/auth.guard';
-
+// import { CalendarComponent } from './components/calendar/calendar.component';
+import { IgxCalendarModule } from 'igniteui-angular';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 const appRoutes: Routes = [
   //{path : 'events', component: EventListComponent},
@@ -56,6 +60,12 @@ const appRoutes: Routes = [
       MatSnackBarModule,
       HttpClientModule,
       BrowserAnimationsModule,
+      // CalendarComponent,
+      CalendarModule.forRoot({
+        provide: DateAdapter,
+        useFactory: adapterFactory,
+      }),
+      MatIconModule,
     ],
     providers: [ CookieService,
       { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

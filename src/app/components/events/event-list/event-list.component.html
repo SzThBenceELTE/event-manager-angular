@@ -99,9 +99,9 @@
                             </div>
                           </td>
                         <td *ngIf="!isDeveloper" class="d-table-cell">
-                            <button class="btn btn-primary m-1" (click)="cloneEvent(event.id)">Clone</button>
-                            <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">Edit</button>
-                            <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">Delete</button>
+                            <button class="btn btn-primary m-1" (click)="cloneEvent(event.id)"><mat-icon>file_copy</mat-icon></button>
+                            <button class="btn btn-secondary m-1" (click)="editEvent(event.id)"><mat-icon>edit</mat-icon></button>
+                            <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)"><mat-icon>delete_forever</mat-icon></button>
                         </td>
                     </tr>
                 </tbody>

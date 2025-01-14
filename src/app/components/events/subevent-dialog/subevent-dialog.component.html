@@ -25,8 +25,8 @@ button {
   <p><strong>Max Participants:</strong> {{ data.maxParticipants }}</p>
 </div>
 <div mat-dialog-actions>
-  <button color="primary" (click)="cloneSubevent()">Clone</button>
-  <button color="accent" (click)="editSubevent()">Edit</button>
-  <button color="warn" (click)="deleteSubevent()">Delete</button>
-  <button (click)="close()">Close</button>
+  <button class="btn btn-primary m-1" (click)="cloneSubevent()"><mat-icon>file_copy</mat-icon></button>
+  <button class="btn btn-secondary m-1"  (click)="editSubevent()"><mat-icon>edit</mat-icon></button>
+  <button class="btn btn-danger m-1" (click)="deleteSubevent()"><mat-icon>delete_forever</mat-icon></button>
+  <button class="btn btn-info m1" (click)="close()"><mat-icon>close</mat-icon></button>
 </div>

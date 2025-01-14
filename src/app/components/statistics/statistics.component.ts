@@ -24,6 +24,14 @@ export class StatisticsComponent implements OnInit {
     [EventTypeEnum.PRESENTATION]: 0,
     [EventTypeEnum.MEETUP]: 0,
   };
+
+  allTotalEvents: number = 0;
+  allEventTypeCounts: { [key in EventTypeEnum]: number } = {
+    [EventTypeEnum.MEETING]: 0,
+    [EventTypeEnum.PRESENTATION]: 0,
+    [EventTypeEnum.MEETUP]: 0,
+  };
+
   totalPersons: number = 0;
   roleCounts: { [key in RoleTypeEnum]: number } = {
     [RoleTypeEnum.MANAGER]: 0,
@@ -37,6 +45,9 @@ export class StatisticsComponent implements OnInit {
   };
 
   eventTypeData: { name: string; value: number }[] = [];
+  allEventTypeData: { name: string; value: number }[] = [];
+
+  
   roleData: { name: string; value: number }[] = [];
   groupData: { name: string; value: number }[] = [];
 
@@ -85,11 +96,35 @@ export class StatisticsComponent implements OnInit {
         }
       });
       console.log(this.eventTypeCounts);
+      this.eventTypeData = []; // Clear existing data
       this.eventTypeKeys().forEach((key) => {
         this.eventTypeData.push({ name: key.toString(), value: this.eventTypeCounts[key] });
       });
       // console.log(this.eventTypeCounts);
       console.log(this.eventTypeData);
+    });
+
+    this.eventService.getAllAndPastEvents().subscribe((events) => {
+      this.allTotalEvents = events.length;
+      console.log(events);
+      // Initialize counts
+      for (const type of Object.values(EventTypeEnum)) {
+        this.allEventTypeCounts[type] = 0;
+      }
+
+      events.forEach((event) => {
+        if (event.type && this.allEventTypeCounts.hasOwnProperty(event.type)) {
+          this.allEventTypeCounts[event.type]++;
+          
+        }
+      });
+      console.log(this.allEventTypeCounts);
+      this.allEventTypeData = []; // Clear existing data
+      this.eventTypeKeys().forEach((key) => {
+        this.allEventTypeData.push({ name: key.toString(), value: this.allEventTypeCounts[key] });
+      });
+      // console.log(this.eventTypeCounts);
+      console.log(this.allEventTypeData);
     });
 
     

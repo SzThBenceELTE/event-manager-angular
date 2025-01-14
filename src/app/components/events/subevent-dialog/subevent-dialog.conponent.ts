@@ -5,12 +5,13 @@ import { EventModel } from '../../../models/event.model';
 import { EventService } from '../../../services/event/event.service';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-subevent-dialog',
   templateUrl: './subevent-dialog.component.html',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, ConfirmationDialogComponent],
+  imports: [CommonModule, MatDialogModule, ConfirmationDialogComponent, MatIconModule],
 })
 export class SubeventDialogComponent {
   constructor(

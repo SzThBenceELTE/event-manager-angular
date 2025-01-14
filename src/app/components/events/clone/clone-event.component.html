@@ -161,27 +161,24 @@
                 <!-- Maximum Number of Participants Field -->
                 <div class="form-group mb-3">
                     <label for="maxParticipants" class="form-label">Maximum Number of Participants</label>
-                    <mat-slider 
-                        discrete 
-                        [displayWith]="formatLabel" 
-                        min="1" 
-                        max="300" 
-                        step="1"
-                        [(ngModel)]="maxParticipants"
-                        name="maxParticipants"
-                        required
-                        #maxParticipantsModel="ngModel">
+                    <div class="input-group">
+                        <button type="button" class="btn btn-outline-secondary" (click)="decrement()">
+                            -
+                        </button>
                         <input 
-                            matSliderThumb
-                            placeholder="Number of Participants"
+                            type="number"
+                            class="form-control"
                             id="maxParticipants"
                             name="maxParticipants"
                             [(ngModel)]="maxParticipants"
-                            ngDefaultControl
                             required
-                            #maxParticipantsThumb="ngModel"
-                            [value]="maxParticipants">
-                    </mat-slider>
+                            #maxParticipantsModel="ngModel"
+                            min="1"
+                            max="300">
+                        <button type="button" class="btn btn-outline-secondary" (click)="increment()">
+                            +
+                        </button>
+                    </div>
                     <div *ngIf="maxParticipantsModel.invalid && maxParticipantsModel.touched" class="text-danger">
                         Participants are required.
                     </div>

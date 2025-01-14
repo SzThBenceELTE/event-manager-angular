@@ -20,7 +20,7 @@ import {
   query,
   stagger,
 } from '@angular/animations';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-user-list',
@@ -32,6 +32,7 @@ import {
     MatButtonModule,
     ConfirmationDialogComponent,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
   animations: [
     trigger('listAnimation', [

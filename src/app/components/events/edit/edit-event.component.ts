@@ -258,4 +258,16 @@ export class EditEventComponent implements OnInit {
             verticalPosition: 'top',
         });
     }
+
+    decrement() {
+        if (this.maxParticipants > 1) {
+            this.maxParticipants--;
+        }
+    }
+
+    increment() {
+        if (this.maxParticipants < 300) {
+            this.maxParticipants++;
+        }
+    }
 }
