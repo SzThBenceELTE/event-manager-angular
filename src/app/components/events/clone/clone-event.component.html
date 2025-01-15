@@ -1,199 +1,214 @@
 <!-- clone-event.component.html -->
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <h2 class="text-center mb-4">Clone Event</h2>
-            <form #cloneEventForm="ngForm" (ngSubmit)="onSubmit(cloneEventForm)">
-                
-                <!-- Event Name Field -->
-                <div class="form-group mb-3">
-                    <label for="name" class="form-label">Event Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        class="form-control"
-                        [(ngModel)]="event.name"
-                        required
-                        #nameModel="ngModel"
-                    />
-                    <div *ngIf="nameModel.invalid && nameModel.touched" class="text-danger">
-                        Event Name is required.
-                    </div>
-                </div>
-
-                <!-- Event Type Field -->
-                <div class="form-group mb-3">
-                    <label for="type" class="form-label">Event Type</label>
-                    <select
-                        id="type"
-                        name="type"
-                        class="form-control"
-                        [(ngModel)]="event.type"
-                        required
-                        #typeModel="ngModel"
-                    >
-                        <option *ngFor="let type of eventTypes" [value]="type">
-                            {{ type }}
-                        </option>
-                    </select>
-                    <div *ngIf="typeModel.invalid && typeModel.touched" class="text-danger">
-                        Please select an Event Type.
-                    </div>
-                </div>
-
-                <!-- Parent Event Field -->
-                <div class="form-group mb-3">
-                    <label for="parentId" class="form-label">Parent Event</label>
-                    <select
-                        id="parentId"
-                        name="parentId"
-                        class="form-control"
-                        [(ngModel)]="event.parentId"
-                        #parentIdModel="ngModel"
-                    >
-                        <option [ngValue]="null">None</option>
-                        <option *ngFor="let parentEvent of parentEvents" [ngValue]="parentEvent.id">
-                            {{ parentEvent.name }}
-                        </option>
-                    </select>
-                    <div *ngIf="parentIdModel.invalid && parentIdModel.touched" class="text-danger">
-                        Please select a valid Parent Event.
-                    </div>
-                </div>
-
-                <!-- Start Date Field -->
-                <div class="form-group mb-3">
-                    <label for="startDate" class="form-label">Start Date</label>
-                    <mat-form-field appearance="fill" class="w-100">
-                        <input
-                            matInput
-                            [matDatepicker]="startDatePicker"
-                            placeholder="Select start date"
-                            id="startDate"
-                            name="startDate"
-                            [(ngModel)]="event.startDate"
-                            required
-                            #startDateModel="ngModel"
-                        />
-                        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #startDatePicker></mat-datepicker>
-                    </mat-form-field>
-                    <div *ngIf="startDateModel.invalid && startDateModel.touched" class="text-danger">
-                        Start Date is required.
-                    </div>
-                </div>
-
-                <!-- Start Time Field -->
-                <div class="form-group mb-3">
-                    <label for="startTime" class="form-label">Start Time</label>
-                    <input
-                        type="time"
-                        id="startTime"
-                        name="startTime"
-                        [(ngModel)]="startTime"
-                        required
-                        class="form-control"
-                        #startTimeModel="ngModel"
-                    />
-                    <div *ngIf="startTimeModel.invalid && startTimeModel.touched" class="text-danger">
-                        Start Time is required.
-                    </div>
-                </div>
-
-                <!-- End Date Field -->
-                <div class="form-group mb-3">
-                    <label for="endDate" class="form-label">End Date</label>
-                    <mat-form-field appearance="fill" class="w-100">
-                        <input
-                            matInput
-                            [matDatepicker]="endDatePicker"
-                            placeholder="Select end date"
-                            id="endDate"
-                            name="endDate"
-                            [(ngModel)]="event.endDate"
-                            required
-                            #endDateModel="ngModel"
-                        />
-                        <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #endDatePicker></mat-datepicker>
-                    </mat-form-field>
-                    <div *ngIf="endDateModel.invalid && endDateModel.touched" class="text-danger">
-                        End Date is required.
-                    </div>
-                </div>
-
-                <!-- End Time Field -->
-                <div class="form-group mb-3">
-                    <label for="endTime" class="form-label">End Time</label>
-                    <input
-                        type="time"
-                        id="endTime"
-                        name="endTime"
-                        [(ngModel)]="endTime"
-                        required
-                        class="form-control"
-                        #endTimeModel="ngModel"
-                    />
-                    <div *ngIf="endTimeModel.invalid && endTimeModel.touched" class="text-danger">
-                        End Time is required.
-                    </div>
-                </div>
-
-                <!-- Assign to Groups with Checkboxes -->
-                <div class="form-group mb-3">
-                    <label class="form-label">Assign to Groups</label>
-                    <div *ngFor="let group of availableGroups" class="form-check">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            [id]="'group-' + group"
-                            [value]="group"
-                            (change)="onGroupChange($event, group)"
-                            [checked]="selectedGroups.includes(group)"
-                        />
-                        <label class="form-check-label" [for]="'group-' + group">
-                            {{ group }}
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Maximum Number of Participants Field -->
-                <div class="form-group mb-3">
-                    <label for="maxParticipants" class="form-label">Maximum Number of Participants</label>
-                    <div class="input-group">
-                        <button type="button" class="btn btn-outline-secondary" (click)="decrement()">
-                            -
-                        </button>
-                        <input 
-                            type="number"
-                            class="form-control"
-                            id="maxParticipants"
-                            name="maxParticipants"
-                            [(ngModel)]="maxParticipants"
-                            required
-                            #maxParticipantsModel="ngModel"
-                            min="1"
-                            max="300">
-                        <button type="button" class="btn btn-outline-secondary" (click)="increment()">
-                            +
-                        </button>
-                    </div>
-                    <div *ngIf="maxParticipantsModel.invalid && maxParticipantsModel.touched" class="text-danger">
-                        Participants are required.
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="image">Event Image</label>
-                    <input type="file" (change)="onFileSelected($event)" />
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary w-100">
-                    Create
-                </button>
-            </form>
-        </div>
+      <div class="col-md-6">
+        <h2 class="text-center mb-4">Add Subevent</h2>
+        <form #cloneEventForm="ngForm" (ngSubmit)="onSubmit(cloneEventForm)">
+          <!-- Event Name Field -->
+          <div class="form-group mb-3">
+            <label for="name" class="form-label">Event Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              [(ngModel)]="event.name"
+              required
+              #nameModel="ngModel"
+            />
+            <div *ngIf="nameModel.invalid && nameModel.touched" class="text-danger">
+              Event Name is required.
+            </div>
+          </div>
+  
+          <!-- Event Type Field -->
+          <div class="form-group mb-3">
+            <label for="type" class="form-label">Event Type</label>
+            <select
+              id="type"
+              name="type"
+              class="form-control"
+              [(ngModel)]="event.type"
+              required
+              #typeModel="ngModel"
+            >
+              <option *ngFor="let type of eventTypes" [value]="type">
+                {{ type }}
+              </option>
+            </select>
+            <div *ngIf="typeModel.invalid && typeModel.touched" class="text-danger">
+              Please select an Event Type.
+            </div>
+          </div>
+  
+          <!-- Parent Event Field -->
+          <div class="form-group mb-3">
+            <label for="parentId" class="form-label">Parent Event</label>
+            <select
+              id="parentId"
+              name="parentId"
+              class="form-control"
+              [(ngModel)]="event.parentId"
+              #parentIdModel="ngModel"
+              disabled="true"
+            >
+              <option [ngValue]="null">None</option>
+              <option *ngFor="let parentEvent of parentEvents" [ngValue]="parentEvent.id">
+                {{ parentEvent.name }}
+              </option>
+            </select>
+            <div *ngIf="parentIdModel.invalid && parentIdModel.touched" class="text-danger">
+              Please select a valid Parent Event.
+            </div>
+          </div>
+  
+          <!-- Start Date Field -->
+          <div class="form-group mb-3">
+            <label for="startDate" class="form-label">
+              Start Date - Can't be less than {{ startDate | date:'dd/MM/yyyy' }}
+            </label>
+            <mat-form-field appearance="fill" class="w-100">
+              <input
+                matInput
+                [matDatepicker]="startDatePicker"
+                placeholder="Select start date"
+                id="startDate"
+                name="startDate"
+                [(ngModel)]="event.startDate"
+                required
+                #startDateModel="ngModel"
+              />
+              <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+            <div *ngIf="startDateModel.invalid && startDateModel.touched" class="text-danger">
+              Start Date is required.
+            </div>
+          </div>
+  
+          <!-- Start Time Field -->
+          <div class="form-group mb-3">
+            <label for="startTime" class="form-label">Start Time - Can't be less than {{ getStartTime() }}</label>
+            <input
+              type="time"
+              id="startTime"
+              name="startTime"
+              [(ngModel)]="startTime"
+              required
+              class="form-control"
+              #startTimeModel="ngModel"
+            />
+            <div *ngIf="startTimeModel.invalid && startTimeModel.touched" class="text-danger">
+              Start Time is required.
+            </div>
+          </div>
+  
+          <!-- End Date Field -->
+          <div class="form-group mb-3">
+            <label for="endDate" class="form-label">
+              End Date - Can't be less than {{ startDate | date:'dd/MM/yyyy' }}
+            </label>
+            <mat-form-field appearance="fill" class="w-100">
+              <input
+                matInput
+                [matDatepicker]="endDatePicker"
+                placeholder="Select end date"
+                id="endDate"
+                name="endDate"
+                [(ngModel)]="event.endDate"
+                required
+                #endDateModel="ngModel"
+              />
+              <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+            <div *ngIf="endDateModel.invalid && endDateModel.touched" class="text-danger">
+              End Date is required.
+            </div>
+          </div>
+  
+          <!-- End Time Field -->
+          <div class="form-group mb-3">
+            <label for="endTime" class="form-label">End Time - Can't be less than {{ getStartTime() }}</label>
+            <input
+              type="time"
+              id="endTime"
+              name="endTime"
+              [(ngModel)]="endTime"
+              required
+              class="form-control"
+              #endTimeModel="ngModel"
+            />
+            <div *ngIf="endTimeModel.invalid && endTimeModel.touched" class="text-danger">
+              End Time is required.
+            </div>
+          </div>
+  
+          <!-- Assign to Groups with Checkboxes -->
+          <div class="form-group mb-3">
+            <label class="form-label">Assign to Groups</label>
+            <div *ngFor="let group of getNeededGroups()" class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [id]="'group-' + group"
+                [value]="group"
+                (change)="onGroupChange($event, group)"
+                [checked]="selectedGroups.includes(group)"
+              />
+              <label class="form-check-label" [for]="'group-' + group">
+                {{ group }}
+              </label>
+            </div>
+          </div>
+  
+          <!-- Maximum Number of Participants Field -->
+          <div class="form-group mb-3">
+            <label for="maxParticipants" class="form-label">
+              Maximum Number of Participants - Can't be larger than {{ getParentParticipants() }}
+            </label>
+            <div class="input-group">
+              <button type="button" class="btn btn-outline-secondary" (click)="decrement()">
+                -
+              </button>
+              <input
+                type="number"
+                class="form-control"
+                id="maxParticipants"
+                name="maxParticipants"
+                [(ngModel)]="maxParticipants"
+                required
+                #maxParticipantsModel="ngModel"
+                min="1"
+                [max]="getParentParticipants()"
+              />
+              <button type="button" class="btn btn-outline-secondary" (click)="increment()">
+                +
+              </button>
+            </div>
+            <div *ngIf="maxParticipantsModel.invalid && maxParticipantsModel.touched" class="text-danger">
+              Participants are required.
+            </div>
+          </div>
+  
+          <!-- Image Upload Field with Preview -->
+          <div class="form-group mb-3">
+            <label for="image">Event Image</label>
+            <input type="file" id="image" (change)="onFileSelected($event)" accept="image/*" />
+          </div>
+          
+          <!-- Display Image Preview if Available -->
+          <div *ngIf="imagePreviewUrl" class="mt-3">
+            <p>Image Preview:</p>
+            <img [src]="imagePreviewUrl" alt="Image preview" class="img-thumbnail" style="max-width: 300px;">
+          </div>
+  
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary w-100">
+            Create
+          </button>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
+  

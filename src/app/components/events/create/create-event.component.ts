@@ -45,6 +45,7 @@ export class CreateEventComponent {
     selectedGroups: GroupTypeEnum[] = []; // Hold selected group IDs
     formSubmitted: boolean = false;
     selectedFile: File | null = null;
+    imagePreviewUrl: string | ArrayBuffer | null = null;
 
     event: EventModel = {
         id: 0,
@@ -77,7 +78,23 @@ export class CreateEventComponent {
         const input = event.target as HTMLInputElement;
     
         if (input.files && input.files.length) {
-          this.selectedFile = input.files[0];
+            const file = input.files[0];
+            const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+    
+            if (file.size > maxSizeInBytes) {
+                this.openErrorSnackbar('Image size must not exceed 2 MB');
+                // Optionally, you can also reset the file input control here.
+                return;
+              }
+
+            this.selectedFile = file;
+
+            // Create a FileReader to load the file and set the preview URL
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.imagePreviewUrl = reader.result;
+            };
+            reader.readAsDataURL(this.selectedFile);
         }
       }
 

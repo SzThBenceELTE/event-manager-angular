@@ -1,4 +1,4 @@
-// edit-event.component.ts
+// clone-event.component.ts
 import { Component, OnInit } from "@angular/core";
 import { EventTypeEnum } from "../../../models/enums/event-type.enum";
 import { EventService } from "../../../services/event/event.service";
@@ -17,7 +17,8 @@ import { EventModel } from "../../../models/event.model";
 @Component({
     selector: 'clone-event',
     templateUrl: './clone-event.component.html',
-    //styleUrls: ['./edit-event.component.css'], // Ensure this line is uncommented
+    // Uncomment styleUrls if needed
+    // styleUrls: ['./edit-event.component.css'],
     standalone: true,
     imports: [
         CommonModule, 
@@ -29,6 +30,7 @@ import { EventModel } from "../../../models/event.model";
         MatFormFieldModule
     ],
 })
+//this is actually just a subevent creator, not a clone function anymore
 export class CloneEventComponent implements OnInit {
     eventTypes = Object.values(EventTypeEnum);
     availableGroups = Object.values(GroupTypeEnum);
@@ -43,10 +45,14 @@ export class CloneEventComponent implements OnInit {
     formatLabel: (value: number) => string;
     parentEvents: EventModel[] = [];
     selectedFile: File | null = null;
-    selectedGroups: GroupTypeEnum[] = []; // Hold selected group IDs
-    currentParticipants: number = 0; // Initialize with default or fetched value
-    maxParticipants: number = 10; // Initialize with default or fetched value
-    parentId: number | undefined = undefined; // Initialize parentId
+    // New property to hold the preview URL
+    imagePreviewUrl: string | ArrayBuffer | null = null;
+    selectedGroups: GroupTypeEnum[] = [];
+    allGroups: GroupTypeEnum[] = [];
+    currentParticipants: number = 0;
+    maxParticipants: number = 10;
+    parentId: number | undefined = undefined;
+    parentParticipants: number = 0;
 
     constructor(
         private eventService: EventService,
@@ -54,14 +60,11 @@ export class CloneEventComponent implements OnInit {
         private route: ActivatedRoute,
         private snackBar: MatSnackBar
     ) {
-        this.formatLabel = (value: number) => {
-            return value.toString();
-        }
+        this.formatLabel = (value: number) => value.toString();
     }
 
     ngOnInit() {
         this.id = Number(this.route.snapshot.params['id']);
-        // Fetch existing event data by ID
         this.loadParentEvents();
         this.eventService.getEvent(this.id).subscribe({
             next: (data) => {
@@ -74,14 +77,17 @@ export class CloneEventComponent implements OnInit {
                 this.endTime = this.formatTime(data.endDate);
                 this.maxParticipants = data.maxParticipants || 10;
                 this.currentParticipants = data.currentParticipants || 0;
-                //this.parentEvents = data.filter((event: { parentId: any; }) => !event.parentId);
                 this.setSelectedGroups(data.groups);
                 this.parentId = data.parentId;
+                console.log("Parent id:", this.id);
 
+                // In your clone, you might want to use the current event as the parent event.
+                this.event.parentId = this.id;
+                this.parentParticipants = data.maxParticipants;
             },
             error: (err) => {
                 console.error('Failed to load event data', err);
-                this.router.navigate(['/events']); // Redirect if event not found
+                this.router.navigate(['/events']);
             }
         });
     }
@@ -89,6 +95,7 @@ export class CloneEventComponent implements OnInit {
     setSelectedGroups(groups: GroupTypeEnum[]): void {
         for (const group of groups) {
             this.selectedGroups.push(group);
+            this.allGroups.push(group);
         }
         console.log('Selected groups:', this.selectedGroups);
     }
@@ -97,9 +104,25 @@ export class CloneEventComponent implements OnInit {
         const input = event.target as HTMLInputElement;
     
         if (input.files && input.files.length) {
-          this.selectedFile = input.files[0];
+            const file = input.files[0];
+            const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+    
+            if (file.size > maxSizeInBytes) {
+                this.openErrorSnackbar('Image size must not exceed 2 MB');
+                // Optionally, you can also reset the file input control here.
+                return;
+              }
+
+            this.selectedFile = file;
+    
+            // Create a FileReader to load the file and set the preview URL
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.imagePreviewUrl = reader.result;
+            };
+            reader.readAsDataURL(this.selectedFile);
         }
-      }
+    }
 
     /**
      * Formats a Date object or ISO string to 'HH:MM' format.
@@ -124,16 +147,16 @@ export class CloneEventComponent implements OnInit {
     }
 
     loadParentEvents(): void {
-            this.eventService.getEvents().subscribe({
-              next: (events) => {
+        this.eventService.getEvents().subscribe({
+            next: (events) => {
                 // Exclude subevents to prevent circular references
                 this.parentEvents = events.filter((event: EventModel) => event.parentId == null);
-              },
-              error: (err) => {
+            },
+            error: (err) => {
                 console.error('Error fetching parent events:', err);
-              },
-            });
-          }
+            },
+        });
+    }
 
     onSubmit(cloneEventForm: any) {
         const { name, type, startDate, endDate, maxParticipants } = cloneEventForm.value;
@@ -143,22 +166,21 @@ export class CloneEventComponent implements OnInit {
         console.log('endDate', endDate);
         console.log('maxParticipants', maxParticipants);
 
-        // Validate all fields are filled, including startDate and endDate
+        // Validate required fields
         if (!name || !type || !startDate || !endDate || !maxParticipants || !this.startDate || !this.endDate) {
             this.openErrorSnackbar('Please fill out all fields');
             return;
         }
 
-        // Parse startDate and endDate
+        // Parse startTime and endTime
         const [startHour, startMinute] = this.startTime.split(':').map(Number);
         const [endHour, endMinute] = this.endTime.split(':').map(Number);
 
-        // Create Date objects from startDate and endDate
         const fullStartDate = new Date(startDate);
-        fullStartDate.setHours(startHour, startMinute, 0, 0); // Set hours and minutes
+        fullStartDate.setHours(startHour, startMinute, 0, 0);
 
         const fullEndDate = new Date(endDate);
-        fullEndDate.setHours(endHour, endMinute, 0, 0); // Set hours and minutes
+        fullEndDate.setHours(endHour, endMinute, 0, 0);
 
         // Validate date logic
         if (fullStartDate > fullEndDate) {
@@ -195,7 +217,7 @@ export class CloneEventComponent implements OnInit {
         formData.append('endDate', fullEndDate.toISOString());
         formData.append('maxParticipants', maxParticipants.toString());
         
-        // Append image file
+        // Append image file if selected
         if (this.selectedFile) {
             formData.append('image', this.selectedFile, this.selectedFile.name);
         }
@@ -205,15 +227,14 @@ export class CloneEventComponent implements OnInit {
             formData.append('parentId', this.event.parentId.toString());
         }
         
-        console.log('selectedGroups', this.selectedGroups);
+        // Append groups if any are selected
         if (this.selectedGroups && this.selectedGroups.length > 0) {
             this.selectedGroups.forEach((group) => {
               formData.append('groups', group);
             });
-          }
+        }
 
-
-        // Create the event
+        // Call backend createEvent method
         this.eventService.createEvent(formData).subscribe({
             next: () => {
                 this.openSuccessSnackbar('Event updated successfully');
@@ -226,23 +247,15 @@ export class CloneEventComponent implements OnInit {
         });
     }
 
-    /**
-     * Opens an error snack-bar with customized styling and positioning.
-     * @param message The error message to display.
-     */
     private openErrorSnackbar(message: string): void {
         this.snackBar.open(message, 'Close', {
-            duration: 5000, // Increased duration for better visibility
+            duration: 5000,
             panelClass: ['custom-snackbar', 'error-snackbar'],
             horizontalPosition: 'left',
             verticalPosition: 'bottom',
         });
     }
 
-    /**
-     * Opens a success snack-bar with customized styling and positioning.
-     * @param message The success message to display.
-     */
     private openSuccessSnackbar(message: string): void {
         this.snackBar.open(message, 'Close', {
             duration: 3000,
@@ -253,14 +266,34 @@ export class CloneEventComponent implements OnInit {
     }
 
     decrement() {
+        let max = this.getParentParticipants();
+        console.log("Max participants: ", max);
         if (this.maxParticipants > 1) {
-            this.maxParticipants--;
+            if (this.maxParticipants > max) {
+                this.maxParticipants = max;
+            } else {
+                this.maxParticipants--;
+            }
         }
     }
 
     increment() {
-        if (this.maxParticipants < 300) {
+        let max = this.getParentParticipants();
+        console.log("Max participants: ", max);
+        if (this.maxParticipants < max) {
             this.maxParticipants++;
         }
+    }
+
+    getParentParticipants(): number {
+        return this.parentParticipants;
+    }
+
+    getNeededGroups(): GroupTypeEnum[] {
+        return this.allGroups;
+    }
+
+    getStartTime(): string {
+        return this.startTime;
     }
 }
