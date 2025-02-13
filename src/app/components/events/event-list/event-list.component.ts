@@ -1,5 +1,5 @@
 // event-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { EventService } from '../../../services/event/event.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,8 @@ import {
 } from '@angular/animations';
 import { SubeventDialogComponent } from '../subevent-dialog/subevent-dialog.conponent';
 import { MatIconModule } from '@angular/material/icon';
+import { RealTimeService } from '../../../services/real-time/real-time.service';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -86,8 +88,21 @@ export class EventListComponent implements OnInit {
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private router: Router,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private http: HttpClient,
+    private realTimeService: RealTimeService,
+    private ngZone: NgZone
+  ) {
+    // Subscribe to the refresh event and re-fetch events on refresh
+    this.realTimeService.onRefresh((data) => {
+      console.log('Refresh event received:', data);
+      // Re-enter Angular zone to update the BehaviorSubject
+      this.ngZone.run(() => {
+        this.fetchEvents();
+      });
+    });
+
+  }
 
   ngOnInit() {
     this.fetchEvents();
