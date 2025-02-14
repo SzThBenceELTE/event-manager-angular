@@ -11,6 +11,7 @@ export class RealTimeService {
   constructor() {
     // Connect to your Socket.IO server; adjust the URL/port as needed.
     this.socket = io('http://localhost:3000', {
+      path: '/io',
       // Optional configuration
       reconnectionAttempts: 5,
       timeout: 100,

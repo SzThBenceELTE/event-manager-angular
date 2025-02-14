@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
 import { EventService } from '../../services/event/event.service';
 import { PersonService } from '../../services/person/person.service';
@@ -8,6 +8,8 @@ import { GroupTypeEnum } from '../../models/enums/group-type.enum';
 import { PersonModel } from '../../models/person.model';
 import { CommonModule } from '@angular/common';
 import { Color } from '@swimlane/ngx-charts';
+import { HttpClient } from '@angular/common/http';
+import { RealTimeService } from '../../services/real-time/real-time.service';
 
 @Component({
   selector: 'app-statistics',
@@ -69,8 +71,22 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private personService: PersonService
-  ) {}
+    private personService: PersonService,
+    private http: HttpClient,
+    private realTimeService: RealTimeService,
+    private ngZone: NgZone
+  ) {
+    this.realTimeService.onRefresh((data) => {
+      console.log('Refresh event received:', data);
+      this.ngZone.run(() => {
+        console.log('StatisticsComponent refresh initialized');
+        this.loadEventStatistics();
+        console.log('Event statistics loaded');
+        this.loadPersonStatistics();
+        console.log('Person statistics loaded');
+      });
+    });
+  }
 
   ngOnInit() {
     console.log('StatisticsComponent initialized');
@@ -135,6 +151,19 @@ export class StatisticsComponent implements OnInit {
   loadPersonStatistics() {
     this.personService.getPersons().subscribe((persons) => {
       this.totalPersons = persons.length;
+      console.log(persons);
+
+      for (const role of Object.values(RoleTypeEnum)) {
+        this.roleCounts[role] = 0;
+      }
+
+      for (const group of Object.values(GroupTypeEnum)) {
+        this.groupCounts[group] = 0;
+      }
+      
+
+      console.log(this.roleCounts);
+      console.log(this.groupCounts);
 
       persons.forEach((person : PersonModel) => {
         if (person.role && this.roleCounts.hasOwnProperty(person.role)) {
@@ -145,12 +174,15 @@ export class StatisticsComponent implements OnInit {
         }
         
       });
+      console.log(this.roleCounts);
 
+      this.roleData = []; // Clear existing data
       this.roleKeys().forEach((key) => {
         this.roleData.push({ name: key.toString(), value: this.roleCounts[key] });
       });
       console.log(this.roleData);
-  
+      
+      this.groupData = []; // Clear existing data
       this.groupKeys().forEach((key) => {
         this.groupData.push({ name: key.toString(), value: this.groupCounts[key] });
       });

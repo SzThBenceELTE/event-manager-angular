@@ -1,14 +1,34 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { RealTimeService } from '../real-time/real-time.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private apiUrl = 'http://localhost:3000/api/users'; // Node.js API endpoint
+  private ngZone = inject(NgZone);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private realTimeService: RealTimeService) {
+    this.ngZone.runOutsideAngular(() => {
+      this.realTimeService.onRefresh((data) => {
+        console.log('Refresh event received:', data);
+        // Re-enter Angular zone when updating state or making HTTP calls
+        this.ngZone.run(() => {
+          this.getUsers().subscribe({
+            next: (users) => {
+              console.log('Refreshed users:', users);
+              // Update local state if needed
+            },
+            error: (err) => {
+              console.error('Error refreshing users:', err);
+            }
+          });
+        });
+      });
+    });
+  }
 
   getUsers(): Observable<any> {
     return this.http.get(this.apiUrl);

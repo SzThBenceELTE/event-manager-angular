@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { PersonService } from '../../../services/person/person.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -21,6 +21,8 @@ import {
   stagger,
 } from '@angular/animations';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpClient } from '@angular/common/http';
+import { RealTimeService } from '../../../services/real-time/real-time.service';
 
 @Component({
   selector: 'app-user-list',
@@ -103,8 +105,18 @@ export class PersonListComponent implements OnInit {
      private router: Router, 
      private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private authService : AuthService) {
-      
+    private authService : AuthService, 
+    private http: HttpClient,
+        private realTimeService: RealTimeService,
+        private ngZone: NgZone) {
+       // Subscribe to the refresh event and re-fetch events on refresh
+        this.realTimeService.onRefresh((data) => {
+          console.log('Refresh event received:', data);
+
+          this.ngZone.run(() => {
+            this.fetchPeople();
+          });
+        });
     }
 
   ngOnInit() {
@@ -135,11 +147,11 @@ export class PersonListComponent implements OnInit {
     this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
       if (person) {
         this.currentUserId = person.UserId;
-        console.log('Current UserID:', this.currentUserId);
+        //console.log('Current UserID:', this.currentUserId);
       }
     });
     this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
-      console.log('Current person:', person);
+      //console.log('Current person:', person);
       if (person?.role === 'DEVELOPER') {
         this.isDeveloper = true;
       } else {

@@ -7,6 +7,7 @@ import { tap } from 'rxjs/operators';
 import { PersonModel } from '../../models/person.model';
 import { UserModel } from '../../models/user.model';
 import { CookieService } from 'ngx-cookie-service';
+import { RealTimeService } from '../real-time/real-time.service';
 
 
 @Injectable({
@@ -14,6 +15,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api/users'; // Change to your login API endpoint
+  //private ngZone = inject(NgZone);
 
   private currentPerson: PersonModel | null = null;
   private tokenKey = 'loginToken';
@@ -23,6 +25,24 @@ export class AuthService {
       this.getCurrentPersonFromCookie()
     );
     this.currentPerson$ = this.currentPersonSubject.asObservable();
+
+    // this.ngZone.runOutsideAngular(() => {
+    //   this.realTimeService.onRefresh((data) => { 
+    //     console.log('Refresh event received:', data);
+    //     // Re-enter Angular zone when updating state or making HTTP calls
+    //     this.ngZone.run(() => {
+    //       this.getPersons().subscribe({
+    //         next: (events) => {
+    //           console.log('Refreshed events:', events);
+    //           // Update local state if needed
+    //         },
+    //         error: (err) => {
+    //           console.error('Error refreshing events:', err);
+    //         }
+    //       });
+    //     });
+    //   });
+    // });
   }
 
   private loginTokenSubject = new BehaviorSubject<string | null>(null);
