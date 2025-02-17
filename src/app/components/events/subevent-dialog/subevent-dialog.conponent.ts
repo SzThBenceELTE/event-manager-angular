@@ -10,8 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-subevent-dialog',
   templateUrl: './subevent-dialog.component.html',
+  styleUrls: ['./subevent-dialog.component.css'],
   standalone: true,
-  imports: [CommonModule, MatDialogModule, ConfirmationDialogComponent, MatIconModule],
+  imports: [CommonModule, MatDialogModule, MatIconModule],
 })
 export class SubeventDialogComponent {
   constructor(

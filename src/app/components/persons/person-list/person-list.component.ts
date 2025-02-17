@@ -27,7 +27,7 @@ import { RealTimeService } from '../../../services/real-time/real-time.service';
 @Component({
   selector: 'app-user-list',
   templateUrl: './person-list.component.html',
-//   styleUrls: ['./user-list.component.css',],
+  styleUrls: ['./person-list.component.css',],
   standalone: true,
   imports: [CommonModule, FormsModule,
     MatDialogModule,

@@ -30,17 +30,16 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-event-list',
   templateUrl: './event-list.component.html',
+  styleUrls: ['./event-list.component.css'],
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     MatSnackBarModule,
     MatDialogModule,
-    ConfirmationDialogComponent,
     MatProgressSpinnerModule,
-    SubeventDialogComponent,
-    MatIconModule,
-  ],
+    MatIconModule
+],
   animations: [
     trigger('listAnimation', [
       transition('* => *', [

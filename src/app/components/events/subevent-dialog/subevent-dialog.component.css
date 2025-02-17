@@ -1,0 +1,11 @@
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Adds a 10px gap between buttons */
+    padding: 20px;
+  }
+  
+  button {
+    max-height: 40px;
+    min-width: 50px;
+  }

@@ -1,0 +1,28 @@
+.table {
+    display: table;
+    width: 100%;
+}
+
+.d-table-row {
+    display: table-row;
+}
+
+.d-table-cell {
+    display: table-cell;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table, .d-table-row, .d-table-cell {
+        display: block;
+        width: 100%;
+    }
+
+    .d-table-row {
+        margin-bottom: 1rem;
+    }
+
+    .d-table-cell {
+        padding: 0.5rem 0;
+    }
+}
