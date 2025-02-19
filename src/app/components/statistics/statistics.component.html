@@ -95,7 +95,37 @@
             </ng-template>
           </div>
         </div>
+
+        <br>
+        <br>
+
+        <div class="row pt-2">
+          <h3>Export Options</h3>
+        </div>
+
+        <div class="row pt-2 pb-5 justify-content-left">
+          <div class="col-lg-2 col-12">
+            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportEvents()">Export Events</button>
+          </div>
+          <div class="col-lg-2 col-12">
+            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportPeople()">Export People</button>
+          </div>
+          <div class="col-lg-2 col-12">
+            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportUsers()">Export Users</button>
+          </div>
+          <div class="col-lg-2 col-12">
+            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportTeams()">Export Teams</button>
+          </div>
+        </div>
+
       </div>
+      
+
+      
+
+      
+
+      
 
 
   

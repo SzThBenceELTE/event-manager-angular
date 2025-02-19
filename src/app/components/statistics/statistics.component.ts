@@ -10,6 +10,9 @@ import { CommonModule } from '@angular/common';
 import { Color } from '@swimlane/ngx-charts';
 import { HttpClient } from '@angular/common/http';
 import { RealTimeService } from '../../services/real-time/real-time.service';
+import { ExportService } from '../../services/export/export.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-statistics',
@@ -69,12 +72,17 @@ export class StatisticsComponent implements OnInit {
 
   defaultColor: string = '#CCCCCC';
 
+  isDeveloper: boolean = false;
+
   constructor(
     private eventService: EventService,
     private personService: PersonService,
+    private snackBar: MatSnackBar,
     private http: HttpClient,
     private realTimeService: RealTimeService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private exportService: ExportService,
+    private authService: AuthService
   ) {
     this.realTimeService.onRefresh((data) => {
       console.log('Refresh event received:', data);
@@ -94,6 +102,19 @@ export class StatisticsComponent implements OnInit {
     console.log('Event statistics loaded');
     this.loadPersonStatistics();
     console.log('Person statistics loaded');
+    this.checkUserRole();
+    console.log('User role checked');
+  }
+
+  checkUserRole(): void {
+    this.authService.currentPerson$.subscribe((person: PersonModel | null) => {
+      console.log('Current person:', person);
+      if (person?.role === 'DEVELOPER') {
+        this.isDeveloper = true;
+      } else {
+        this.isDeveloper = false;
+      }
+    });
   }
 
   loadEventStatistics() {
@@ -222,4 +243,103 @@ export class StatisticsComponent implements OnInit {
       this.groupKeys().indexOf(name as GroupTypeEnum)
     ] || this.defaultColor;
   }
+
+  exportEvents(): void {
+    this.exportService.exportEvents().subscribe({
+      next: (response) => {
+        // If your response includes the file data, you might handle it here
+        // For example, create a blob and trigger a download:
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'events.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Show success snackbar message
+        this.snackBar.open('Events exported successfully!', 'Close', { duration: 3000 });
+      },
+      error: (error) => {
+        // Show error snackbar message
+        this.snackBar.open('Export failed. Please try again later.', 'Close', { duration: 3000 });
+        console.error('Export error:', error);
+      }
+    });
+
+  }
+
+  exportPeople(): void {
+    this.exportService.exportPeople().subscribe({
+      next: (response) => {
+        // If your response includes the file data, you might handle it here
+        // For example, create a blob and trigger a download:
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'people.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Show success snackbar message
+        this.snackBar.open('Events exported successfully!', 'Close', { duration: 3000 });
+      },
+      error: (error) => {
+        // Show error snackbar message
+        this.snackBar.open('Export failed. Please try again later.', 'Close', { duration: 3000 });
+        console.error('Export error:', error);
+      }
+    });
+  }
+
+  exportUsers(): void {
+    this.exportService.exportUsers().subscribe({
+      next: (response) => {
+        // If your response includes the file data, you might handle it here
+        // For example, create a blob and trigger a download:
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'users.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Show success snackbar message
+        this.snackBar.open('Events exported successfully!', 'Close', { duration: 3000 });
+      },
+      error: (error) => {
+        // Show error snackbar message
+        this.snackBar.open('Export failed. Please try again later.', 'Close', { duration: 3000 });
+        console.error('Export error:', error);
+      }
+    });
+  }
+
+  exportTeams(): void {
+    this.exportService.exportTeams().subscribe({
+      next: (response) => {
+        // If your response includes the file data, you might handle it here
+        // For example, create a blob and trigger a download:
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'teams.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Show success snackbar message
+        this.snackBar.open('Events exported successfully!', 'Close', { duration: 3000 });
+      },
+      error: (error) => {
+        // Show error snackbar message
+        this.snackBar.open('Export failed. Please try again later.', 'Close', { duration: 3000 });
+        console.error('Export error:', error);
+      }
+    });
+  }
+
+  
 }

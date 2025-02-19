@@ -25,6 +25,7 @@ import { SubeventDialogComponent } from '../subevent-dialog/subevent-dialog.conp
 import { MatIconModule } from '@angular/material/icon';
 import { RealTimeService } from '../../../services/real-time/real-time.service';
 import { HttpClient } from '@angular/common/http';
+import { ExportService } from '../../../services/export/export.service';
 
 
 @Component({
@@ -83,6 +84,7 @@ export class EventListComponent implements OnInit {
   loading: boolean = true;
 
   constructor(
+    private exportService: ExportService,
     private eventService: EventService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -147,6 +149,30 @@ export class EventListComponent implements OnInit {
     }
   }
 
+  exportEvents(): void {
+    this.exportService.exportEvents().subscribe({
+      next: (response) => {
+        // If your response includes the file data, you might handle it here
+        // For example, create a blob and trigger a download:
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'events.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Show success snackbar message
+        this.snackBar.open('Events exported successfully!', 'Close', { duration: 3000 });
+      },
+      error: (error) => {
+        // Show error snackbar message
+        this.snackBar.open('Export failed. Please try again later.', 'Close', { duration: 3000 });
+        console.error('Export error:', error);
+      }
+    });
+  }
+  
   onSearch(): void {
     const term = this.searchTerm.toLowerCase();
     const type = this.selectedEventType;
