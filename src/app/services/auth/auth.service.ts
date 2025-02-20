@@ -8,6 +8,7 @@ import { PersonModel } from '../../models/person.model';
 import { UserModel } from '../../models/user.model';
 import { CookieService } from 'ngx-cookie-service';
 import { RealTimeService } from '../real-time/real-time.service';
+import { jwtDecode } from 'jwt-decode';
 
 
 @Injectable({
@@ -97,7 +98,7 @@ export class AuthService {
     return this.usernameSubject.asObservable();
   }
 
-  login(username: string, password: string) {
+  public login(username: string, password: string) {
     return this.http
       .post<{ user: UserModel; token: string }>(`${this.apiUrl}/login`, { username, password })
       .pipe(
@@ -105,11 +106,15 @@ export class AuthService {
           this.cookieService.set('token', response.token);
           this.cookieService.set('loginToken', response.token);
           this.cookieService.set(this.tokenKey, response.token);
+          console.log('login response', response.token);
+          localStorage.setItem(this.tokenKey, response.token);
+          console.log('login token', localStorage.getItem(this.tokenKey));
           this.setCurrentUser(response.user);
           this.setCurrentPerson(response.user.Person);
         })
       );
   }
+
 
   // // Add method to get the token
   // getToken(): string | null {
@@ -124,18 +129,41 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  isLoggedIn(): boolean {
-    if (typeof window === 'undefined') {
-      return false; // SSR context, localStorage isn't available
-    }
-    return !!localStorage.getItem('loginToken');
+  private decodeToken(): any | null {
+    const token = localStorage.getItem(this.tokenKey);
+    return token ? jwtDecode(token) : null;
   }
 
-  getName(): string | null {
-    if (typeof window === 'undefined') {
-      return ""; // SSR context, localStorage isn't available
-    }
-    return localStorage.getItem('userName');
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem(this.tokenKey);
+  }
+
+  get username(): string | null {
+    return this.decodeToken()?.username;
+  }
+
+  get isAdmin(): boolean {
+    return this.decodeToken()?.role == "MANAGER";
+  }
+
+  get firstName(): string {
+    return this.decodeToken()?.firstName;
+  }
+
+  get surname(): string {
+    return this.decodeToken()?.surname;
+  }
+  
+  get teamname(): string {
+    return this.decodeToken()?.team_name;
+  }
+  
+  get userId(): string {
+    return this.decodeToken()?.userId;
+  }
+  
+  get teamId(): string {
+    return this.decodeToken()?.team_id;
   }
 
   setCurrentPerson(person: PersonModel): void {
@@ -156,6 +184,7 @@ export class AuthService {
   clearCurrentUser(): void {
     this.currentUserSubject.next(null);
     this.cookieService.delete('currentUser');
+    localStorage.removeItem(this.tokenKey);
   }
 
   // Clear user data on logout

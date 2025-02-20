@@ -36,21 +36,16 @@ import {
     ]),
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   isNavbarCollapsed = true;
-  isLoggedIn: boolean = false;
+  //isLoggedIn: boolean = false;
   currentPerson$: Observable<PersonModel | null>;
   menuState = 'closed';
 
-  constructor(private authService: AuthService) {
+  constructor(public authService: AuthService) {
     this.currentPerson$ = this.authService.currentPerson$;
   }
 
-  ngOnInit() {
-    this.currentPerson$.subscribe((person) => {
-      this.isLoggedIn = !!person;
-    });
-  }
 
   toggleNavbar() {
     this.isNavbarCollapsed = !this.isNavbarCollapsed;
