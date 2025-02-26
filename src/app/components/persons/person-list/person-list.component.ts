@@ -197,6 +197,7 @@ export class PersonListComponent implements OnInit {
     this.selectedRole = null;
     this.selectedGroup = null;
     this.filteredPeople = this.people;
+    this.onSearch();
   }
 
   createPerson() {

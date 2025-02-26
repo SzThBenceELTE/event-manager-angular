@@ -192,6 +192,7 @@ export class EventListComponent implements OnInit {
     this.selectedEventType = null;
     this.filteredEvents = this.events;
     this.currentPage = 1;
+    this.onSearch();
     this.calculatePagination();
   }
 

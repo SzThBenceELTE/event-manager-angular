@@ -1,63 +1,71 @@
 <div class="container">
-    <h1>Statistics</h1>
+  <h1 class="text-center my-4">Statistics</h1>
 
-      <div class="row pb-5">
-      
-        <div class="col-md-6" style="height: 400px;">
-          <h2>Active Events: {{ totalEvents }}</h2>
-          
-          <!-- Show loader or placeholder while data is loading -->
-          <div *ngIf="eventTypeData.length === 0; else activeEventChart">
-            Loading Event Types...
+  <!-- Row for Pie Charts -->
+  <div class="row g-4 mb-5">
+    <!-- Active Events Pie Chart Card -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title">Active Events: {{ totalEvents }}</h2>
+          <div *ngIf="eventTypeData.length === 0; else activeEventChart" class="text-center">
+            <p>Loading Event Types...</p>
           </div>
           <ng-template #activeEventChart>
-            <ngx-charts-pie-chart
-              [results]="eventTypeData"
-              [legend]="true"
-              [labels]="true"
-              [explodeSlices]="false"
-              [doughnut]="false"
-              [gradient]="false"
-              >
-            </ngx-charts-pie-chart>
+            <div class="chart-container">
+              <ngx-charts-pie-chart
+                [results]="eventTypeData"
+                [legend]="true"
+                [labels]="true"
+                [explodeSlices]="false"
+                [doughnut]="false"
+                [gradient]="false">
+              </ngx-charts-pie-chart>
+            </div>
           </ng-template>
-          <!-- <h3>Total Events: {{ totalEvents }}</h3> -->
-        </div>
-
-        <div class="col-md-6" style="height: 400px;">
-          <h2>All Events Since Launch: {{ allTotalEvents }}</h2>
-          
-          <!-- Show loader or placeholder while data is loading -->
-          <div *ngIf="allEventTypeData.length === 0; else allEventChart">
-            Loading Event Types...
-          </div>
-          <ng-template #allEventChart>
-            <ngx-charts-pie-chart
-              [results]="allEventTypeData"
-              [legend]="true"
-              [labels]="true"
-              [explodeSlices]="false"
-              [doughnut]="false"
-              [gradient]="false"
-              >
-            </ngx-charts-pie-chart>
-          </ng-template>
-          <!-- <h3>Total Events: {{ totalEvents }}</h3> -->
         </div>
       </div>
-        
-        
-        <!-- Roles Bar Chart -->
-      
-      <div class="row pt-5">
-        <h2>Total People in the System: {{ totalPersons }}</h2>
-        <div class="col-md-6" style="height: 400px;">
-          <h3>Number of people in each role</h3>
-          <div *ngIf="roleData.length === 0; else rolesChart">
-            Loading Roles...
+    </div>
+
+    <!-- All Events Since Launch Pie Chart Card -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title">All Events Since Launch: {{ allTotalEvents }}</h2>
+          <div *ngIf="allEventTypeData.length === 0; else allEventChart" class="text-center">
+            <p>Loading Event Types...</p>
+          </div>
+          <ng-template #allEventChart>
+            <div class="chart-container">
+              <ngx-charts-pie-chart
+                [results]="allEventTypeData"
+                [legend]="true"
+                [labels]="true"
+                [explodeSlices]="false"
+                [doughnut]="false"
+                [gradient]="false">
+              </ngx-charts-pie-chart>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row for Bar Charts -->
+  <div class="row g-4 mb-5">
+    <!-- Roles Bar Chart Card -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title">Total People: {{ totalPersons }}</h2>
+          <h3 class="card-subtitle mb-3 text-muted">People in Each Role</h3>
+          <div *ngIf="roleData.length === 0; else rolesChart" class="text-center">
+            <p>Loading Roles...</p>
           </div>
           <ng-template #rolesChart>
-            <ngx-charts-bar-vertical
+            <div class="chart-container">
+              <ngx-charts-bar-vertical
               [results]="roleData"
               [legend]="true"
               [xAxis]="true"
@@ -66,66 +74,65 @@
               [showXAxisLabel]="true"
               [showYAxisLabel]="true"
               [xAxisLabel]="'Position'"
-              [yAxisLabel]="'Number of People'"
-              >
+              [yAxisLabel]="'Number of People'">
             </ngx-charts-bar-vertical>
+          </div>
           </ng-template>
-          
         </div>
-
-        <div class="col-md-6" style="height: 400px;">
-            <h3>Number of developers in each group</h3>
-            <div *ngIf="groupData.length === 0; else groupsChart">
-              Loading Groups...
-            </div>
-            <ng-template #groupsChart>
-              <ngx-charts-bar-vertical
-                [results]="groupData"
-                [scheme]="groupsColorScheme"
-                [legend]="true"
-                [xAxis]="true"
-                [yAxis]="true"
-                [showDataLabel]="true"
-                [showXAxisLabel]="true"
-                [showYAxisLabel]="true"
-                [xAxisLabel]="'Developer Groups'"
-                [yAxisLabel]="'Number of People'"
-                >
-              </ngx-charts-bar-vertical>
-            </ng-template>
-          </div>
-        </div>
-
-        <br>
-        <br>
-
-        <div class="row pt-2">
-          <h3>Export Options</h3>
-        </div>
-
-        <div class="row pt-2 pb-5 justify-content-left">
-          <div class="col-lg-2 col-12">
-            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportEvents()">Export Events</button>
-          </div>
-          <div class="col-lg-2 col-12">
-            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportPeople()">Export People</button>
-          </div>
-          <div class="col-lg-2 col-12">
-            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportUsers()">Export Users</button>
-          </div>
-          <div class="col-lg-2 col-12">
-            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportTeams()">Export Teams</button>
-          </div>
-        </div>
-
       </div>
-      
+    </div>
 
-      
+    <!-- Developers Group Bar Chart Card -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title">Developers in Each Group</h3>
+          <div *ngIf="groupData.length === 0; else groupsChart" class="text-center">
+            <p>Loading Groups...</p>
+          </div>
+          <ng-template #groupsChart>
+            <div class="chart-container">
+              <ngx-charts-bar-vertical
+              [results]="groupData"
+              [scheme]="groupsColorScheme"
+              [legend]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [showDataLabel]="true"
+              [showXAxisLabel]="true"
+              [showYAxisLabel]="true"
+              [xAxisLabel]="'Developer Groups'"
+              [yAxisLabel]="'Number of People'">
+            </ngx-charts-bar-vertical>
+          </div> 
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      
-
-      
-
-
-  
+  <!-- Export Options Card -->
+  <div class="row mb-5 pb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title">Export Options</h3>
+          <div class="row g-3">
+            <div class="col-lg-2 col-6">
+              <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportEvents()">Export Events</button>
+            </div>
+            <div class="col-lg-2 col-6">
+              <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportPeople()">Export People</button>
+            </div>
+            <div class="col-lg-2 col-6">
+              <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportUsers()">Export Users</button>
+            </div>
+            <div class="col-lg-2 col-6">
+              <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportTeams()">Export Teams</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

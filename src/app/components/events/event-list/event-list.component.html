@@ -1,113 +1,108 @@
 <!-- event-list.component.html -->
 
-
-<div *ngIf="loading" class="loading-container">
+<div *ngIf="loading" class="loading-container text-center my-4">
     <mat-spinner></mat-spinner>
   </div>
-
-<div *ngIf="!loading" class="container table">
-    <h2>The list of events in the system</h2>
+  
+  <div *ngIf="!loading" class="container">
+    <h2 class="my-3 text-center">The list of events in the system</h2>
+    
     <!-- Search and Filter Inputs -->
     <div class="row mb-3">
-        <div class="col-md-4 mb-2">
-            <input 
-                type="text" 
-                class="form-control" 
-                placeholder="Search by event name..." 
-                [(ngModel)]="searchTerm" 
-                (input)="onSearch()"
-            />
-        </div>
-        <div class="col-md-3 mb-2">
-            <select class="form-select" [(ngModel)]="selectedEventType" (change)="onSearch()">
-                <option [ngValue]="null">All Event Types</option>
-                <option *ngFor="let type of eventTypes" [ngValue]="type">{{ type }}</option>
-            </select>
-        </div>
-        <div class="col-md-2 mb-2">
-            <button class="btn btn-primary w-100" (click)="onClearFilters()">Clear</button>
-        </div>
+      <div class="col-md-4 mb-2">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Search by event name..." 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearch()"
+        />
+      </div>
+      <div class="col-md-3 mb-2">
+        <select class="form-select" [(ngModel)]="selectedEventType" (change)="onSearch()">
+          <option [ngValue]="null">All Event Types</option>
+          <option *ngFor="let type of eventTypes" [ngValue]="type">{{ type }}</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2">
+        <button class="btn btn-primary w-100" (click)="onClearFilters()">Clear</button>
+      </div>
     </div>
-
+  
     <!-- Display Message When No Results Found -->
     <div *ngIf="filteredEvents.length === 0">
-        <p>No events found matching your search criteria.</p>
+      <p class="text-center">No events found matching your search criteria.</p>
     </div>
-
-    <!-- Event Table -->
-    <div *ngIf="filteredEvents.length !== 0">
-        <div>
-            <table class="table table-striped">
-                <thead>
-                    <tr class="d-table-row">
-                        <th class="d-table-cell">Event Name</th>
-                        <th class="d-table-cell">Event Type</th>
-                        <th class="d-table-cell">Start Date</th>
-                        <th class="d-table-cell">End Date</th>
-                        <th class="d-table-cell">Groups</th> <!-- New Groups Column -->
-                        <th class="d-table-cell">Current Participants</th>
-                        <th class="d-table-cell">Max Participants</th>
-                        <th class="d-table-cell">Subevents</th>
-                        <th *ngIf="!isDeveloper" class="d-table-cell">Actions</th>
-                    </tr>
-                </thead>
-                <tbody [@listAnimation]>
-                    <tr *ngFor="let event of paginatedEvents" class="d-table-row">
-                        <td class="d-table-cell">{{event.name}}</td>
-                        <td class="d-table-cell">{{event.type}}</td>
-                        <td class="d-table-cell">{{event.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
-                        <td class="d-table-cell">{{event.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
-                        <td class="d-table-cell">
-                            {{ event.groups?.join(', ') || 'No Groups Assigned' }}
-                        </td> 
-                        <td class="d-table-cell">{{event.currentParticipants}}</td>
-                        <td class="d-table-cell">{{event.maxParticipants}}</td>
-                        <td class="d-table-cell">
-                            <div *ngFor="let subevent of event.subevents">
-                              <a href="#" (click)="openSubeventDialog(subevent); $event.preventDefault();">
-                                <strong>{{ subevent.name }}</strong>
-                              </a>
-                            </div>
-                          </td>
-                        <td *ngIf="!isDeveloper" class="d-table-cell">
-                            <button class="btn btn-primary m-1" (click)="cloneEvent(event.id)"><mat-icon>file_copy</mat-icon></button>
-                            <button class="btn btn-secondary m-1" (click)="editEvent(event.id)"><mat-icon>edit</mat-icon></button>
-                            <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)"><mat-icon>delete_forever</mat-icon></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+  
+    <!-- Event Cards Grid -->
+    <div *ngIf="filteredEvents.length !== 0" class="row row-cols-1 row-cols-md-3 g-4">
+    <div *ngFor="let event of paginatedEvents" class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ event.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ event.type }}</h6>
+          <p class="card-text">
+            <strong>Start:</strong> {{ event.startDate | date:'dd/MM/yyyy HH:mm' }}<br>
+            <strong>End:</strong> {{ event.endDate | date:'dd/MM/yyyy HH:mm' }}<br>
+            <strong>Groups:</strong> {{ event.groups?.join(', ') || 'No Groups Assigned' }}<br>
+            <strong>Participants:</strong> {{ event.currentParticipants }} / {{ event.maxParticipants }}
+          </p>
+          <div *ngIf="event.subevents && event.subevents.length > 0">
+            <p class="mb-1"><strong>Subevents:</strong></p>
+            <div>
+              <!-- Pill-styled buttons for subevents -->
+              <button 
+                *ngFor="let subevent of event.subevents" 
+                type="button" 
+                class="btn btn-outline-secondary btn-sm rounded-pill m-1"
+                (click)="openSubeventDialog(subevent); $event.preventDefault();">
+                {{ subevent.name }}
+              </button>
+            </div>
+          </div>
         </div>
-    </div>  
-
+        <div class="card-footer text-center" *ngIf="!isDeveloper">
+          <button class="btn btn-primary m-1" (click)="cloneEvent(event.id)">
+            <mat-icon>file_copy</mat-icon>
+          </button>
+          <button class="btn btn-secondary m-1" (click)="editEvent(event.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="btn btn-danger m-1" (click)="deleteEvent(event.id)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
     <!-- Pagination Controls -->
-    <nav *ngIf="totalPages > 1">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" [class.disabled]="currentPage === 1">
-                <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-            </li>
-            <li 
-                class="page-item" 
-                *ngFor="let page of [].constructor(totalPages); let i = index" 
-                [class.active]="currentPage === (i + 1)"
-            >
-                <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
-            </li>
-            <li class="page-item" [class.disabled]="currentPage === totalPages">
-                <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
-            </li>
-        </ul>
+    <nav *ngIf="totalPages > 1" class="mt-3">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+        </li>
+        <li 
+          class="page-item" 
+          *ngFor="let page of [].constructor(totalPages); let i = index" 
+          [class.active]="currentPage === (i + 1)"
+        >
+          <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        </li>
+      </ul>
     </nav>
-
-    <!-- Create Event Button -->
-    <div class="row pt-2 justify-content-center">
-        <div class="col-lg-4 col-12">
-            <button *ngIf="!isDeveloper" class="btn btn-primary w-100" (click)="createEvent()">Create Event</button>
-        </div>
+  
+    <!-- Create Event & Export Event Buttons -->
+    <div class="row pt-3 justify-content-center">
+      <div class="col-lg-4 col-12 mb-2">
+        <button *ngIf="!isDeveloper" class="btn btn-primary w-100" (click)="createEvent()">Create Event</button>
+      </div>
+      <div class="col-lg-4 col-12">
+        <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportEvents()">Export Events</button>
+      </div>
     </div>
-    <div class="row pt-2 justify-content-center">
-        <div class="col-lg-4 col-12">
-            <button *ngIf="!isDeveloper" class="btn btn-secondary w-100" (click)="exportEvents()">Export Events</button>
-        </div>
-    </div>
-</div>
+  </div>
+  

@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth/auth.service';
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
+  styleUrls: ['./statistics.component.css'],
   standalone: true,
   imports: [CommonModule,
     NgxChartsModule,

@@ -1,0 +1,42 @@
+    .offcanvas {
+        width: 300px;
+    }
+
+
+  /* Make offcanvas title larger and white */
+  .offcanvas-header .offcanvas-title {
+    background-color: #221C3A;
+    font-size: 1.5rem; /* Adjust as needed */
+    color: #ffffff;
+  }
+
+  /* Increase padding inside the offcanvas body */
+  .offcanvas-body {
+    padding: 1.5rem; /* More padding than default */
+  }
+
+  /* Slightly larger font for nav links */
+  .offcanvas-body .nav-link {
+    font-size: 1.125rem; /* ~18px */
+    color: #ffffff;
+    /* text-align: center; */
+    display: block;
+    padding: 0.5rem;
+  }
+
+  /* Hover effect on nav links */
+  .offcanvas-body .nav-link:hover {
+    background-color: #343148; /* Slightly lighter/darker shade of purple */
+    color: #fff !important;
+    transition: background-color 0.3s;
+  }
+
+  /* Extra spacing between menu items */
+  .offcanvas-body .nav-item {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Offcanvas background color to match your theme (optional) */
+  .offcanvas.offcanvas-start {
+    background-color: #221C3A;
+  }

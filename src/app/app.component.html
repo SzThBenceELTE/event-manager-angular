@@ -1,51 +1,53 @@
 
-
-<nav class="navbar navbar-expand-lg bg-primary mb-4" data-bs-theme="dark">
-  <div class="container">
-    <a class="navbar-brand" routerLink="/">Event Manager</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      (click)="isNavbarCollapsed = !isNavbarCollapsed"
-      aria-controls="navbarColor01"
-      [attr.aria-expanded]="!isNavbarCollapsed"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
+<!-- Main Navbar Header with Offcanvas Toggle -->
+<nav class="navbar navbar-primary " style="background-color: #221C3A;">
+  <div class="container-fluid">
+    <!-- Sidebar Toggle Button -->
+    <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+      <i class="bi bi-list"></i>
     </button>
-    <div
-      class="collapse navbar-collapse"
-      [class.show]="!isNavbarCollapsed"
-      id="navbarColor01"
-    >
-      <ul class="navbar-nav me-auto">
-        <!-- Nav items -->
-        <li class="nav-item" *ngIf="authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/people">People</a>
-        </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/events">Events</a>
-        </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/statistics">Statistics</a>
-        </li>
-        <li class="nav-item" *ngIf="!authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/register">Register</a>
-        </li>
-        
-        <li class="nav-item"  *ngIf="authService.isLoggedIn()">
-            <a class="nav-link" disabled> Welcome, {{ (currentPerson$ | async)?.firstName }}! </a>  
-        </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn()">
-          <span>
-            <a class="nav-link" (click)="logout()">Logout</a>
-          </span>
-        </li>
-        <li class="nav-item" *ngIf="!authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/login">Login</a>
-        </li>
-      </ul>
+    <div class="d-flex align-items-center">
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <span class="text-white me-3 fs-5">Welcome, {{ (currentPerson$ | async)?.firstName }}!</span>
+        <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+      </ng-container>
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <a class="btn btn-outline-light me-2" routerLink="/register">Register</a>
+        <a class="btn btn-outline-light" routerLink="/login">Login</a>
+      </ng-container>
     </div>
   </div>
 </nav>
-<router-outlet></router-outlet>
+
+<!-- Offcanvas Sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>
+    <button type="button" class="btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="navbar-nav">
+      <!-- Display these links only when logged in -->
+      <li class="nav-item" *ngIf="authService.isLoggedIn()">
+        <a class="nav-link" routerLink="/people" routerLinkActive="active-link">People</a>
+      </li>
+      <li class="nav-item" *ngIf="authService.isLoggedIn()">
+        <a class="nav-link" routerLink="/events" routerLinkActive="active-link">Events</a>
+      </li>
+      <li class="nav-item" *ngIf="authService.isLoggedIn()">
+        <a class="nav-link" routerLink="/statistics" routerLinkActive="active-link">Statistics</a>
+      </li>
+      <!-- Links for non-logged in users -->
+      <li class="nav-item" *ngIf="!authService.isLoggedIn()">
+        <a class="nav-link" routerLink="/register" routerLinkActive="active-link">Register</a>
+      </li>
+      <li class="nav-item" *ngIf="!authService.isLoggedIn()">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active-link">Login</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="container my-4">
+  <router-outlet></router-outlet>
+</div>
